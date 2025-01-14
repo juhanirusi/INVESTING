@@ -39,7 +39,7 @@ class FetchFinancialData:
 
         balance_sheets = balance_sheets.sort_values(by="date")
 
-        # print(balance_sheets.columns)
+        print(balance_sheets.columns)
 
         return balance_sheets
 
