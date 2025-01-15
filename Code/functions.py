@@ -15,8 +15,10 @@ class FunctionsToRun:
         )
 
         for (_, income_statement), (_, balance_sheet) in financial_statements:
+
             shareholders_equity = balance_sheet["totalStockholdersEquity"]
             weighted_average_shares_outstanding = income_statement["weightedAverageShsOutDil"]
+
             report_date = income_statement["date"]
 
             bvps = shareholders_equity / weighted_average_shares_outstanding
@@ -36,6 +38,7 @@ class FunctionsToRun:
 
             income_before_tax = row["incomeBeforeTax"]
             income_tax_expense = row["incomeTaxExpense"]
+
             report_date = row["date"]
 
             company_effective_tax_rate = (income_tax_expense / income_before_tax) * 100
@@ -122,6 +125,7 @@ class FunctionsToRun:
 
             depreciation_and_amortization = row["depreciationAndAmortization"]
             operating_cash_flow = row["operatingCashFlow"]
+
             report_date = row["date"]
 
             dtocfr = (depreciation_and_amortization / operating_cash_flow) * 100
@@ -163,3 +167,57 @@ class FunctionsToRun:
             print(f"Operating Cash Conversion Ratio (for year - {report_date}) ==> {sr:.2f} %")
 
         return inventory_and_stock_ratios
+
+
+    def debtor_ratio(
+        self, fmp_income_statements: pd.DataFrame, fmp_balance_sheets: pd.DataFrame
+    ) -> dict:
+
+        debtor_ratios = {}
+
+        financial_statements = zip(
+            fmp_income_statements.iterrows(), fmp_balance_sheets.iterrows()
+        )
+
+        for (_, income_statement), (_, balance_sheet) in financial_statements:
+
+            net_receivables = balance_sheet["netReceivables"] # Trade Debtors (also known as Accounts Receivable)
+            revenue = income_statement["revenue"] # Turnover
+
+            report_date = income_statement["date"]
+
+            dr = (net_receivables / revenue) * 100
+
+            debtor_ratios[report_date] = dr
+
+            print(f"Debtor Ratio (for year - {report_date}) ==> {dr:.2f} %")
+
+        return debtor_ratios
+
+
+    def capex_ratio(self, fmp_cash_flow_statements: pd.DataFrame) -> dict:
+
+        """
+        A low Capex ratio (typically below 30%) suggests that the company
+        isn't heavily reliant on reinvesting its cash to maintain or grow
+        operations. This is often a characteristic of high-quality
+        companies with efficient operations and high
+        returns on capital.
+        """
+
+        capex_ratios = {}
+
+        for index, row in fmp_cash_flow_statements.iterrows():
+
+            capital_expenditure = row["capitalExpenditure"]
+            operating_cash_flow = row["operatingCashFlow"]
+
+            report_date = row["date"]
+
+            cr = (capital_expenditure / operating_cash_flow) * 100
+
+            capex_ratios[report_date] = cr
+
+            print(f"Capex Ratio (for year - {report_date}) ==> {cr:.2f} %")
+
+        return capex_ratios

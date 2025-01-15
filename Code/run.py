@@ -15,9 +15,9 @@ CURRENT_SHARE_PRICE = 0
 
 if __name__ == "__main__":
 
-    fmp_income_statements = fetch_financial_data.fetch_income_statements_from_fmp(stock_ticker=STOCK_TICKER)
-    fmp_balance_sheets = fetch_financial_data.fetch_balance_sheets_from_fmp(stock_ticker=STOCK_TICKER)
-    # fmp_cash_flows = fetch_financial_data.fetch_cash_flow_statements_from_fmp(stock_ticker=STOCK_TICKER)
+    # fmp_income_statements = fetch_financial_data.fetch_income_statements_from_fmp(stock_ticker=STOCK_TICKER)
+    # fmp_balance_sheets = fetch_financial_data.fetch_balance_sheets_from_fmp(stock_ticker=STOCK_TICKER)
+    fmp_cash_flows = fetch_financial_data.fetch_cash_flow_statements_from_fmp(stock_ticker=STOCK_TICKER)
 
     # functions.book_value_per_share(fmp_income_statements, fmp_balance_sheets)
     # print("\n")
@@ -35,5 +35,9 @@ if __name__ == "__main__":
     # functions.depreciation_to_operating_cash_flow_ratio(fmp_cash_flows)
     #########################################################################
 
+    # print("\n")
+    # functions.inventory_and_stock_ratio(fmp_income_statements, fmp_balance_sheets) # <-- Manufacturing & Retail Companies
+    # print("\n")
+    # functions.debtor_ratio(fmp_income_statements, fmp_balance_sheets)
     print("\n")
-    functions.inventory_and_stock_ratio(fmp_income_statements, fmp_balance_sheets) # <-- Manufacturing & Retail Companies
+    functions.capex_ratio(fmp_cash_flows)
