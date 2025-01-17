@@ -15,13 +15,13 @@ CURRENT_SHARE_PRICE = 0
 
 if __name__ == "__main__":
 
-    fmp_income_statements = fetch_financial_data.fetch_income_statements_from_fmp(stock_ticker=STOCK_TICKER)
-    # fmp_balance_sheets = fetch_financial_data.fetch_balance_sheets_from_fmp(stock_ticker=STOCK_TICKER)
+    # fmp_income_statements = fetch_financial_data.fetch_income_statements_from_fmp(stock_ticker=STOCK_TICKER)
+    fmp_balance_sheets = fetch_financial_data.fetch_balance_sheets_from_fmp(stock_ticker=STOCK_TICKER)
     fmp_cash_flows = fetch_financial_data.fetch_cash_flow_statements_from_fmp(stock_ticker=STOCK_TICKER)
 
     # functions.book_value_per_share(fmp_income_statements, fmp_balance_sheets)
     # print("\n")
-    # functions.company_effective_tax_rate(fmp_income_statements)
+    # company_tax_rates = functions.company_effective_tax_rate(fmp_income_statements)
     # print("\n")
     # functions.rising_earnings_through_time(fmp_income_statements)
     # print("\n")
@@ -43,3 +43,5 @@ if __name__ == "__main__":
     # functions.capex_ratio(fmp_cash_flows)
     # print("\n")
     # functions.capex_to_depreciation_ratio(fmp_income_statements, fmp_cash_flows)
+    # print("\n")
+    functions.cash_return_on_capital_invested_ratio(fmp_balance_sheets, fmp_cash_flows)

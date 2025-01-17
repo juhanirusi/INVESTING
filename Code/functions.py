@@ -41,9 +41,11 @@ class FunctionsToRun:
 
             report_date = row["date"]
 
-            company_effective_tax_rate = (income_tax_expense / income_before_tax) * 100
+            company_effective_tax_rate = (income_tax_expense / income_before_tax)
 
-            effective_tax_rates[report_date] = company_effective_tax_rate
+            effective_tax_rates[report_date] = round(company_effective_tax_rate, 2)
+
+            company_effective_tax_rate * 100
 
             print(f"Effective Tax Rate (for year - {report_date}) ==> {company_effective_tax_rate:.2f} %")
 
@@ -259,3 +261,55 @@ class FunctionsToRun:
             print(f"Capex to Depreciation Ratio (for year - {report_date}) ==> {ctdr:.2f} %")
 
         return capex_to_depreciation_ratios
+
+
+    def cash_return_on_capital_invested_ratio(
+        self, fmp_balance_sheets: pd.DataFrame, fmp_cash_flow_statements: pd.DataFrame
+    ) -> dict:
+
+        """
+        A Cash Return on Capital Invested of at least 10% indicates that
+        the company is effectively converting capital into cash and is
+        generating value for investors. It signals efficient
+        management and healthy returns on investments.
+        """
+
+        cash_return_on_capital_invested_ratios = {}
+
+        total_assets_last_year = None
+        current_liabilities_last_year = None
+
+        financial_statements = zip(
+            fmp_balance_sheets.iterrows(), fmp_cash_flow_statements.iterrows()
+        )
+
+        for (_, balance_sheet), (_, cash_flow_statement) in financial_statements:
+
+            if total_assets_last_year != None and current_liabilities_last_year != None:
+
+                total_assets = balance_sheet["totalAssets"]
+                current_liabilities = balance_sheet["totalCurrentLiabilities"]
+
+                capital_employed = total_assets - current_liabilities
+                capital_employed_last_year = total_assets_last_year - current_liabilities_last_year
+
+                average_capital_employed = (capital_employed + capital_employed_last_year) / 2
+
+                operating_cash_flow = cash_flow_statement["operatingCashFlow"]
+                capital_expenditure = cash_flow_statement["capitalExpenditure"]
+
+                # Free Cash Flow to the Firm
+                fcff = operating_cash_flow - capital_expenditure
+
+                croci = (fcff / average_capital_employed) * 100
+
+                report_date = balance_sheet["date"]
+
+                cash_return_on_capital_invested_ratios[report_date] = croci
+
+                print(f"Cash Return on Capital Invested (for year - {report_date}) ==> {croci:.2f} %")
+
+            total_assets_last_year = balance_sheet["totalAssets"]
+            current_liabilities_last_year = balance_sheet["totalCurrentLiabilities"]
+
+        return cash_return_on_capital_invested_ratios
