@@ -15,7 +15,7 @@ CURRENT_SHARE_PRICE = 0
 
 if __name__ == "__main__":
 
-    # fmp_income_statements = fetch_financial_data.fetch_income_statements_from_fmp(stock_ticker=STOCK_TICKER)
+    fmp_income_statements = fetch_financial_data.fetch_income_statements_from_fmp(stock_ticker=STOCK_TICKER)
     # fmp_balance_sheets = fetch_financial_data.fetch_balance_sheets_from_fmp(stock_ticker=STOCK_TICKER)
     fmp_cash_flows = fetch_financial_data.fetch_cash_flow_statements_from_fmp(stock_ticker=STOCK_TICKER)
 
@@ -39,5 +39,7 @@ if __name__ == "__main__":
     # functions.inventory_and_stock_ratio(fmp_income_statements, fmp_balance_sheets) # <-- Manufacturing & Retail Companies
     # print("\n")
     # functions.debtor_ratio(fmp_income_statements, fmp_balance_sheets)
-    print("\n")
-    functions.capex_ratio(fmp_cash_flows)
+    # print("\n")
+    # functions.capex_ratio(fmp_cash_flows)
+    # print("\n")
+    # functions.capex_to_depreciation_ratio(fmp_income_statements, fmp_cash_flows)

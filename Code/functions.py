@@ -221,3 +221,41 @@ class FunctionsToRun:
             print(f"Capex Ratio (for year - {report_date}) ==> {cr:.2f} %")
 
         return capex_ratios
+
+
+    def capex_to_depreciation_ratio(
+        self, fmp_income_statements: pd.DataFrame, fmp_cash_flow_statements: pd.DataFrame
+    ) -> dict:
+
+        """
+        Comparing this ratio with industry peers and historical data can
+        offer deeper insights into a company's investment strategy and
+        financial health. An optimal ratio (>= 100%), along with a rising
+        ROCE, can signal that the company is poised for sustainable
+        growth and enhanced free cash flow generation.
+
+        ON FMP, THE capex NUMBER IS TREATED AS A NEGATIVE NUMBER ON THE
+        CASH FLOW STATEMENT, SO NOTE THAT IN OUR CODE, NEGATIVE NUMBERS
+        THAT ARE OVER 100% ARE ACTUALLY A GOOD THING !!!
+        """
+
+        capex_to_depreciation_ratios = {}
+
+        financial_statements = zip(
+            fmp_income_statements.iterrows(), fmp_cash_flow_statements.iterrows()
+        )
+
+        for (_, income_statement), (_, cash_flow_statement) in financial_statements:
+
+            capital_expenditure = cash_flow_statement["capitalExpenditure"]
+            depreciation_and_amortization = income_statement["depreciationAndAmortization"]
+
+            report_date = income_statement["date"]
+
+            ctdr = (capital_expenditure / depreciation_and_amortization) * 100
+
+            capex_to_depreciation_ratios[report_date] = ctdr
+
+            print(f"Capex to Depreciation Ratio (for year - {report_date}) ==> {ctdr:.2f} %")
+
+        return capex_to_depreciation_ratios
