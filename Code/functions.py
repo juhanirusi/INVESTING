@@ -34,7 +34,7 @@ class FunctionsToRun:
 
         effective_tax_rates = {}
 
-        for index, row in fmp_income_statements.iterrows():
+        for _, row in fmp_income_statements.iterrows():
 
             income_before_tax = row["incomeBeforeTax"]
             income_tax_expense = row["incomeTaxExpense"]
@@ -50,6 +50,34 @@ class FunctionsToRun:
             print(f"Effective Tax Rate (for year - {report_date}) ==> {company_effective_tax_rate:.2f} %")
 
         return effective_tax_rates
+
+
+    def return_on_capital_employed_ratio(
+        self, fmp_income_statements: pd.DataFrame, fmp_balance_sheets: pd.DataFrame
+    ) -> dict:
+
+        return_on_capital_employed_ratios = {}
+
+        financial_statements = zip(
+            fmp_income_statements.iterrows(), fmp_balance_sheets.iterrows()
+        )
+
+        for (_, income_statement), (_, balance_sheet) in financial_statements:
+
+            ebit = income_statement["operatingIncome"] # EBIT
+
+            total_assets = balance_sheet["totalAssets"]
+            current_liabilities = balance_sheet["totalCurrentLiabilities"]
+
+            report_date = income_statement["date"]
+
+            roce = ebit / (total_assets - current_liabilities) * 100
+
+            return_on_capital_employed_ratios[report_date] = roce
+
+            print(f"Return on Capital Employed Ratio (for year - {report_date}) ==> {roce:.2f} %")
+
+        return return_on_capital_employed_ratios
 
 
     def rising_earnings_through_time(self, fmp_income_statements: pd.DataFrame):
@@ -123,7 +151,7 @@ class FunctionsToRun:
 
         depreciation_to_operating_cash_flow_ratios = {}
 
-        for index, row in fmp_cash_flow_statements.iterrows():
+        for _, row in fmp_cash_flow_statements.iterrows():
 
             depreciation_and_amortization = row["depreciationAndAmortization"]
             operating_cash_flow = row["operatingCashFlow"]
@@ -209,7 +237,7 @@ class FunctionsToRun:
 
         capex_ratios = {}
 
-        for index, row in fmp_cash_flow_statements.iterrows():
+        for _, row in fmp_cash_flow_statements.iterrows():
 
             capital_expenditure = row["capitalExpenditure"]
             operating_cash_flow = row["operatingCashFlow"]
@@ -313,3 +341,79 @@ class FunctionsToRun:
             current_liabilities_last_year = balance_sheet["totalCurrentLiabilities"]
 
         return cash_return_on_capital_invested_ratios
+
+
+    def free_cash_flow_per_share(
+        self, fmp_income_statements: pd.DataFrame, fmp_cash_flow_statements: pd.DataFrame
+    ) -> dict:
+
+        free_cash_flows_per_share = {}
+
+        financial_statements = zip(
+            fmp_income_statements.iterrows(), fmp_cash_flow_statements.iterrows()
+        )
+
+        for (_, income_statement), (_, cash_flow_statement) in financial_statements:
+
+            free_cash_flow = cash_flow_statement["freeCashFlow"]
+            weighted_average_shares_outsanding = income_statement["weightedAverageShsOut"]
+
+            fcfps = free_cash_flow / weighted_average_shares_outsanding
+
+            report_date = income_statement["date"]
+
+            free_cash_flows_per_share[report_date] = fcfps
+
+            print(f"Free Cash Flow Per Share (for year - {report_date}) ==> ${fcfps:.2f}")
+
+        return free_cash_flows_per_share
+
+
+    def free_cash_flow_per_share_and_eps_difference_score(
+        self, fmp_income_statements: pd.DataFrame, free_cash_flows_per_share: dict, roce: dict
+    ) -> dict:
+
+        """
+        1 --> EPS is negative - AVOID
+        2 --> FCF per share is negative - AVOID
+        3 --> Avoid, FCF per share is less than 80% of EPS and ROCE is falling.
+        4 --> Maybe. FCF per share is less than 80% of EPS, but ROCE is increasing.
+        5 --> YES, FCF per share is 80% or more of EPS.
+        """
+
+        fcfps_and_eps_difference_statuses = {}
+
+        roce_previous = None
+
+        score = None
+
+        for _, row in fmp_income_statements.iterrows():
+
+            if roce_previous != None:
+
+                report_date = row["date"]
+
+                eps = row["eps"]
+                free_cash_flow_per_share = free_cash_flows_per_share.get(report_date)
+                roce_current = roce.get(report_date)
+
+                if eps <= 0:
+                    score = 1
+                else:
+                    fcfps_to_eps_ratio = (free_cash_flow_per_share / eps) * 100
+
+                    if fcfps_to_eps_ratio >= 80:
+                        score = 5
+                    elif fcfps_to_eps_ratio < 80:
+                        if roce_current > roce_previous:
+                            score = 4
+                        else:
+                            score = 3
+                    elif free_cash_flow_per_share <= 0:
+                        score = 2
+
+                print(f"Free Cash Flow Per Share & EPS Difference Score: {score}/5")
+
+            roce_previous = roce.get(row["date"])
+
+        return fcfps_and_eps_difference_statuses
