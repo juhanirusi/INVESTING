@@ -417,3 +417,35 @@ class FunctionsToRun:
             roce_previous = roce.get(row["date"])
 
         return fcfps_and_eps_difference_statuses
+
+
+    def free_cash_flow_dividend_cover_ratio(
+        self, free_cash_flow_per_shares: dict, dividends: dict
+    ) -> dict:
+
+        """
+        If free cash flow is sufficient to pay dividends,
+        then the ratio will be more than 1
+
+        ---------------------------------------------------------------------
+
+        NOTE --> When analyzing a company, it's a good idea
+        to compare free cash flow per share with dividends
+        per share over a period of 10 years.
+        """
+
+        free_cash_flow_dividend_cover_ratios = {}
+
+        for report_date, free_cash_flow_per_share in free_cash_flow_per_shares.items():
+
+            report_year = int(report_date[:4])
+
+            dividend_per_share = dividends.get(report_year)
+
+            fcfdc = free_cash_flow_per_share / dividend_per_share
+
+            free_cash_flow_dividend_cover_ratios[report_date] = fcfdc
+
+            print(f"Free Cash Flow Dividend Cover Ratio (for year - {report_date}) ==> {fcfdc:.2f}")
+
+        return free_cash_flow_dividend_cover_ratios
