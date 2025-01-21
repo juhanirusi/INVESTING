@@ -449,3 +449,131 @@ class FunctionsToRun:
             print(f"Free Cash Flow Dividend Cover Ratio (for year - {report_date}) ==> {fcfdc:.2f}")
 
         return free_cash_flow_dividend_cover_ratios
+
+
+    def debt_to_free_cash_flow_ratio(
+        self, fmp_balance_sheets: pd.DataFrame, fmp_cash_flows: pd.DataFrame
+    ) -> dict:
+
+        """
+        How many years would it take for the company to pay
+        back it's debt based on it's free cash flow.
+
+        I would rarely look at a company with a ratio that
+        has been consistently MORE THAN 10 !!!
+        """
+
+        debt_to_free_cash_flow_ratios = {}
+
+        financial_statements = zip(
+            fmp_balance_sheets.iterrows(), fmp_cash_flows.iterrows()
+        )
+
+        for (_, balance_sheet), (_, cash_flow_statement) in financial_statements:
+
+            total_debt = balance_sheet["totalDebt"]
+            free_cash_flow = cash_flow_statement["freeCashFlow"]
+
+            report_date = balance_sheet["date"]
+
+            dtfcfr = (total_debt / free_cash_flow)
+
+            debt_to_free_cash_flow_ratios[report_date] = dtfcfr
+
+            print(f"Debt To Free Cash Flow Ratio (for year - {report_date}) ==> {dtfcfr:.2f}")
+
+        return debt_to_free_cash_flow_ratios
+
+
+    def debt_to_net_operating_cash_flow_ratio(
+        self, fmp_balance_sheets: pd.DataFrame, fmp_cash_flows: pd.DataFrame
+    ) -> dict:
+
+        """
+        You wouldn't really want to see a debt to net operating
+        cash flow ratio of more than 3, because once you are
+        starting to get a value for this ratio of over 5,
+        you are looking at companies with significant
+        amounts of debt relative to their cash flows.
+        """
+
+        debt_to_net_operating_cash_flow_ratios = {}
+
+        financial_statements = zip(
+            fmp_balance_sheets.iterrows(), fmp_cash_flows.iterrows()
+        )
+
+        for (_, balance_sheet), (_, cash_flow_statement) in financial_statements:
+
+            total_debt = balance_sheet["totalDebt"]
+            net_operating_cash_flow = cash_flow_statement["netCashProvidedByOperatingActivities"]
+
+            report_date = balance_sheet["date"]
+
+            dtnocfr = (total_debt / net_operating_cash_flow)
+
+            debt_to_net_operating_cash_flow_ratios[report_date] = dtnocfr
+
+            print(f"Debt To Net Operating Cash Flow Ratio (for year - {report_date}) ==> {dtnocfr:.2f}")
+
+        return debt_to_net_operating_cash_flow_ratios
+
+
+    def debt_to_assets_ratio(
+        self, fmp_balance_sheets: pd.DataFrame
+    ) -> dict:
+
+        """
+        Debt to assets is very much like a loan-to-value measure
+        on a house. It tells you what percentage of a company's
+        assets is taken up by debt.
+
+        Generally, it's good to avoid companies with a debt to
+        assets ratio of more than 50%
+
+        THE HIGHER THE PERCENTAGE, THE MORE RISKY A COMPANY GENERALLY IS !!!
+        """
+
+        debt_to_assets_ratios = {}
+
+        for _, row in fmp_balance_sheets.iterrows():
+
+            total_debt = row["totalDebt"]
+            total_assets = row["totalAssets"]
+
+            report_date = row["date"]
+
+            dtar = (total_debt / total_assets) * 100
+
+            debt_to_assets_ratios[report_date] = dtar
+
+            print(f"Debt to Assets Ratio (for year - {report_date}) ==> {dtar:.2f} %")
+
+        return debt_to_assets_ratios
+
+
+    def interest_cover_ratio(
+        self, fmp_income_statements: pd.DataFrame
+    ) -> dict:
+
+        """
+        The higher the ratio, the better, but it's
+        preferable to have a ratio that's at least 5.
+        """
+
+        interest_cover_ratios = {}
+
+        for _, row in fmp_income_statements.iterrows():
+
+            operating_income = row["operatingIncome"] # EBIT
+            interest_payable = row["interestExpense"]
+
+            report_date = row["date"]
+
+            icr = (operating_income / interest_payable)
+
+            interest_cover_ratios[report_date] = icr
+
+            print(f"Interest Cover Ratio (for year - {report_date}) ==> {icr:.2f}")
+
+        return interest_cover_ratios

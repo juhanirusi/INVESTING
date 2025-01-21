@@ -7,7 +7,7 @@ functions = FunctionsToRun()
 
 ###########################################################
 
-STOCK_TICKER = "AAPL"
+STOCK_TICKER = "MSFT"
 CURRENT_SHARE_PRICE = 0
 
 ###########################################################
@@ -16,8 +16,8 @@ CURRENT_SHARE_PRICE = 0
 if __name__ == "__main__":
 
     fmp_income_statements = fetch_financial_data.fetch_income_statements_from_fmp(stock_ticker=STOCK_TICKER)
-    # fmp_balance_sheets = fetch_financial_data.fetch_balance_sheets_from_fmp(stock_ticker=STOCK_TICKER)
-    # fmp_cash_flows = fetch_financial_data.fetch_cash_flow_statements_from_fmp(stock_ticker=STOCK_TICKER)
+    fmp_balance_sheets = fetch_financial_data.fetch_balance_sheets_from_fmp(stock_ticker=STOCK_TICKER)
+    fmp_cash_flows = fetch_financial_data.fetch_cash_flow_statements_from_fmp(stock_ticker=STOCK_TICKER)
 
     # dividends = fetch_financial_data.fetch_dividend_history_data_from_fmp(stock_ticker=STOCK_TICKER)
 
@@ -55,4 +55,14 @@ if __name__ == "__main__":
     # functions.free_cash_flow_per_share_and_eps_difference_score(fmp_income_statements, free_cash_flow_per_share, roce)
     # print("\n")
     # functions.free_cash_flow_dividend_cover_ratio(free_cash_flow_per_share, dividends)
-    # print("\n")
+
+    # Debt
+
+    print("\n")
+    functions.debt_to_free_cash_flow_ratio(fmp_balance_sheets, fmp_cash_flows)
+    print("\n")
+    functions.debt_to_net_operating_cash_flow_ratio(fmp_balance_sheets, fmp_cash_flows)
+    print("\n")
+    functions.debt_to_assets_ratio(fmp_balance_sheets)
+    print("\n")
+    functions.interest_cover_ratio(fmp_income_statements)
