@@ -1,4 +1,4 @@
-# `Book Value Per Share`
+# Book Value Per Share
 
 
 *Book value per share (BVPS) measures a firm's common equity divided by its number of shares outstanding. BVPS indicates a firm's net asset value (NAV) or total assets minus total liabilities per share.*

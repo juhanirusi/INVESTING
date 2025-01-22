@@ -1,4 +1,4 @@
-# `Company's Effective Tax Rate`
+# Company's Effective Tax Rate
 
 
 (`Income Tax Expense` / `Income Before Taxes`) * 100:

@@ -1,4 +1,4 @@
-# `Operating Cash Conversion Ratio`
+# Operating Cash Conversion Ratio
 
 
 *Operating cash conversion ratio tells us how good a company is at turning its operating profits (EBIT) into cash. The way to measure this is with the operating cash conversion ratio, which is defined as:*

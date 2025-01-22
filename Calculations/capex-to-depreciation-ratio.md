@@ -1,4 +1,4 @@
-# `Capex to Depreciation Ratio`
+# Capex to Depreciation Ratio
 
 
 *The depreciation to capex ratio is crucial in assessing whether a company is adequately reinvesting in its assets to maintain operational capacity and growth. Comparing this ratio with industry peers and historical data can offer deeper insights into a company's investment strategy and financial health. ***An optimal ratio, along with a rising ROCE***, can signal that the company is poised for sustainable growth and enhanced free cash flow generation.*

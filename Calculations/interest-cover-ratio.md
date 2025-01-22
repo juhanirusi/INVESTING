@@ -1,4 +1,4 @@
-# `Interest Cover Ratio`
+# Interest Cover Ratio
 
 
 *The Interest Cover Ratio measures how many times a company's earnings before interest and taxes (EBIT) can cover its interest expenses. A higher ratio indicates greater financial stability, as it shows that the company can comfortably meet its interest obligations.*

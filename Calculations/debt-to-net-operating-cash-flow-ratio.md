@@ -1,4 +1,4 @@
-# `Debt to Net Operating Cash Flow Ratio`
+# Debt to Net Operating Cash Flow Ratio
 
 
 *The Debt to Net Operating Cash Flow ratio compares a company's total borrowings to its net operating cash flow (NOCF), which is the cash generated from operations after taxes but before capital expenditures. This ratio is a more conservative measure of a company's ability to handle its debt, as it excludes any non-operational cash flow.*

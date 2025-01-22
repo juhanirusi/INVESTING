@@ -1,4 +1,4 @@
-# `Debtor Ratio`
+# Debtor Ratio
 
 
 *The debtor ratio, also known as the "accounts receivable turnover ratio" or "trade receivables" ratio (if you Google these ratios though, the the calculations are a bit different where turnover is divided by trade debtors instead!), measures the percentage of a company's turnover (revenue) tied up in trade debtors (accounts receivable). This ratio can reveal how efficiently a company collects revenue from its customers and whether there are signs of aggressive accounting practices.*

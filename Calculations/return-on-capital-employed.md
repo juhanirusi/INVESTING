@@ -1,4 +1,4 @@
-# `Return On Capital Employed (ROCE)`
+# Return On Capital Employed (ROCE)
 
 
 *Return on capital employed (ROCE) is a financial ratio companies use to gauge their performance. ROCE is an indicator of a company's efficiency because it measures the company's profitability after factoring in the capital used to achieve that profitability.*

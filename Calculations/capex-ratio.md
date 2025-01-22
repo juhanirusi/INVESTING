@@ -1,4 +1,4 @@
-# `Capex Ratio`
+# Capex Ratio
 
 
 *The Capex Ratio is a financial metric that compares a company's capital expenditures (Capex) to its operating cash flow. This ratio helps investors understand how much of the company's cash flow is being reinvested into maintaining or acquiring new assets. A lower Capex ratio indicates that the company is less capital intensive and has more cash available for other purposes like paying dividends, reducing debt, or generating free cash flow.*

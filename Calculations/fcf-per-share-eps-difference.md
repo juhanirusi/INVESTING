@@ -1,4 +1,4 @@
-# `Free Cash Flow Per Share & EPS Difference`
+# Free Cash Flow Per Share & EPS Difference
 
 
 *Earnings Per Share (EPS) and Free Cash Flow Per Share (FCFps) are two critical metrics for evaluating a company's financial health. However, they often diverge due to the nature of how profits and cash flows are recorded.*

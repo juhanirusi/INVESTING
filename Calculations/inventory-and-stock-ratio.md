@@ -1,4 +1,4 @@
-# `Inventory & Stock Ratio`
+# Inventory & Stock Ratio
 
 
 *The stock ratio is a useful tool to gauge how efficiently a company manages its inventory in relation to its sales, with a rising stock ratio potentially signaling operational inefficiencies or weakened demand.*

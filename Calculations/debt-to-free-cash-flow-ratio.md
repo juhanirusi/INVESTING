@@ -1,4 +1,4 @@
-# `Debt to Free Cash Flow Ratio`
+# Debt to Free Cash Flow Ratio
 
 
 *The Debt to Free Cash Flow (Debt/FCF) Ratio measures how many years it would take for a company to repay all its debt using its current level of free cash flow. A lower ratio is better, indicating that the company can repay its debt more quickly. Conversely, a higher ratio could signal potential financial strain, especially if it's consistently above 10. This ratio helps investors assess the company's leverage and its ability to manage and reduce debt through cash generated from operations.*
