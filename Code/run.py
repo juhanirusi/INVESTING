@@ -7,7 +7,7 @@ functions = FunctionsToRun()
 
 ###########################################################
 
-STOCK_TICKER = "MSFT"
+STOCK_TICKER = "KO"
 CURRENT_SHARE_PRICE = 0
 
 ###########################################################
@@ -58,11 +58,14 @@ if __name__ == "__main__":
 
     # Debt
 
+    # print("\n")
+    # functions.debt_to_free_cash_flow_ratio(fmp_balance_sheets, fmp_cash_flows)
+    # print("\n")
+    # functions.debt_to_net_operating_cash_flow_ratio(fmp_balance_sheets, fmp_cash_flows)
+    # print("\n")
+    # functions.debt_to_assets_ratio(fmp_balance_sheets)
+    # print("\n")
+    # functions.interest_cover_ratio(fmp_income_statements)
+
     print("\n")
-    functions.debt_to_free_cash_flow_ratio(fmp_balance_sheets, fmp_cash_flows)
-    print("\n")
-    functions.debt_to_net_operating_cash_flow_ratio(fmp_balance_sheets, fmp_cash_flows)
-    print("\n")
-    functions.debt_to_assets_ratio(fmp_balance_sheets)
-    print("\n")
-    functions.interest_cover_ratio(fmp_income_statements)
+    functions.owner_earnings(fmp_income_statements, fmp_cash_flows)

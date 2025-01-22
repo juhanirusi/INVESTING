@@ -239,7 +239,7 @@ class FunctionsToRun:
 
         for _, row in fmp_cash_flow_statements.iterrows():
 
-            capital_expenditure = row["capitalExpenditure"]
+            capital_expenditure = abs(row["capitalExpenditure"]) # Get absolute value (remove negative sign)
             operating_cash_flow = row["operatingCashFlow"]
 
             report_date = row["date"]
@@ -277,7 +277,7 @@ class FunctionsToRun:
 
         for (_, income_statement), (_, cash_flow_statement) in financial_statements:
 
-            capital_expenditure = cash_flow_statement["capitalExpenditure"]
+            capital_expenditure = abs(cash_flow_statement["capitalExpenditure"]) # Get absolute value (remove negative sign)
             depreciation_and_amortization = income_statement["depreciationAndAmortization"]
 
             report_date = income_statement["date"]
@@ -324,7 +324,7 @@ class FunctionsToRun:
                 average_capital_employed = (capital_employed + capital_employed_last_year) / 2
 
                 operating_cash_flow = cash_flow_statement["operatingCashFlow"]
-                capital_expenditure = cash_flow_statement["capitalExpenditure"]
+                capital_expenditure = abs(cash_flow_statement["capitalExpenditure"]) # Get absolute value (remove negative sign)
 
                 # Free Cash Flow to the Firm
                 fcff = operating_cash_flow - capital_expenditure
@@ -459,7 +459,7 @@ class FunctionsToRun:
         How many years would it take for the company to pay
         back it's debt based on it's free cash flow.
 
-        I would rarely look at a company with a ratio that
+        I would RARELY look at a company with a ratio that
         has been consistently MORE THAN 10 !!!
         """
 
@@ -577,3 +577,43 @@ class FunctionsToRun:
             print(f"Interest Cover Ratio (for year - {report_date}) ==> {icr:.2f}")
 
         return interest_cover_ratios
+
+
+    def owner_earnings(
+        self, fmp_income_statements: pd.DataFrame, fmp_cash_flows: pd.DataFrame
+    ) -> dict:
+
+        """
+        NOTE --> Here we're using the 'Historical Average Capex'
+        to calculate the 'Maintenance Capex'
+        """
+
+        divider = 0
+        sum_of_capex = 0
+        owner_earnings_dict = {}
+
+        for _, row in fmp_cash_flows.iterrows():
+            capex = abs(row["capitalExpenditure"]) # Get absolute value (remove negative sign)
+
+            sum_of_capex += capex
+
+            divider += 1
+
+        # Calculate the historical average CapEx...
+        maintenance_capex = sum_of_capex / divider
+
+        net_income = fmp_income_statements["netIncome"].iloc[0]
+        depreciation_and_amortization = fmp_income_statements["depreciationAndAmortization"].iloc[0]
+        other_non_cash_items = fmp_cash_flows["otherNonCashItems"].iloc[0]
+        shares_outstanding = fmp_income_statements["weightedAverageShsOut"].iloc[0]
+
+        owner_earnings = net_income + depreciation_and_amortization + other_non_cash_items - maintenance_capex
+        owner_earnings_per_share = owner_earnings / shares_outstanding
+
+        owner_earnings_dict["owner_earnings"] = owner_earnings
+        owner_earnings_dict["owner_earnings_per_share"] = owner_earnings_per_share
+
+        print(f"Owner Earnings ==> ${owner_earnings:.2f}")
+        print(f"Owner Earnings (per share) ==> ${owner_earnings_per_share:.2f}")
+
+        return owner_earnings_dict
