@@ -1,4 +1,4 @@
-# `Is Negative Free Cash Flow Always Bad?`
+# Is Negative Free Cash Flow Always Bad?
 
 
 *In my opinion, the best companies to buy are ones that have large and growing amounts of free cash flow. One possible drawback of this approach is that you will ignore companies with small or even negative free cash flows because they are investing heavily in new assets to grow their future sales, profits and operating cash flows.*

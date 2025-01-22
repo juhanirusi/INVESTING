@@ -1,4 +1,4 @@
-# `What Are Operational And Financial Gearing?`
+# What Are Operational And Financial Gearing?
 
 Here's some info about operational and financial gearing...
 
