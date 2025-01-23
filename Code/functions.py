@@ -617,3 +617,94 @@ class FunctionsToRun:
         print(f"Owner Earnings (per share) ==> ${owner_earnings_per_share:.2f}")
 
         return owner_earnings_dict
+
+
+    def calculate_cash_interest_rate(self, owner_earnings: dict, stock_price: float) -> float:
+
+        """
+        Calculate the cash interest rate (yield)
+
+        You can compare this with the interest rates
+        on savings accounts or bonds.
+        """
+
+        # Cash Profit Per Share
+        owner_earnings_per_share = owner_earnings.get("owner_earnings_per_share")
+
+        cash_interest_rate = (owner_earnings_per_share / stock_price) * 100
+
+        print(f"Company cash interest rate (yield) ==> {cash_interest_rate:.2f}%")
+
+        return cash_interest_rate
+
+
+    def calculate_desired_price_with_cash_yield(self, owner_earnings: dict, minimum_cash_yield: float) -> float:
+
+        """
+        Determine a fair buying price for a stock by setting a
+        minimum acceptable cash yield and solving for price.
+        """
+
+        # Cash Profit Per Share
+        owner_earnings_per_share = owner_earnings.get("owner_earnings_per_share")
+
+        desired_price = owner_earnings_per_share / minimum_cash_yield
+
+        print(f"A fair buying price ==> ${desired_price:.2f}")
+
+        return desired_price
+
+
+    def calculate_desired_price_with_epv(
+        self,
+        fmp_income_statements: pd.DataFrame,
+        fmp_balance_sheets: pd.DataFrame,
+        fmp_cash_flow_statements: pd.DataFrame,
+        company_tax_rates: dict,
+        minimum_cash_yield: float
+    ) -> float:
+
+        """
+        Earnings Power Value (EPV) estimates the value of a company based
+        solely on its current, normalized cash profits, assuming no future
+        growth. It focuses on what the business is worth today, given its
+        ability to generate steady profits over time.
+
+        If the current share price is significantly higher, a large portion
+        of the price is based on future growth expectations. On the other
+        hand, if the current share price is near or below EPV,
+        the stock may be undervalued.
+        """
+
+        income_statements = fmp_income_statements.sort_values(by="date", ascending=False)
+        balance_sheets = fmp_balance_sheets.sort_values(by="date", ascending=False)
+        cash_flow_statements = fmp_cash_flow_statements.sort_values(by="date", ascending=False)
+
+        report_date = income_statements["date"].iloc[0]
+
+        ebit = income_statements["operatingIncome"].iloc[0] # EBIT
+        shares_outstanding = income_statements["weightedAverageShsOut"].iloc[0]
+
+        total_debt = balance_sheets["totalDebt"].iloc[0]
+        cash_and_cash_equivalents = balance_sheets["cashAndCashEquivalents"].iloc[0]
+
+        depreciation_and_amortization = cash_flow_statements["depreciationAndAmortization"].iloc[0]
+        capital_expenditure = abs(cash_flow_statements["capitalExpenditure"]).iloc[0]
+
+        tax_rate = company_tax_rates.get(report_date)
+
+        #------------------------------------------------------------
+
+        normalized_cash_profit = ebit + depreciation_and_amortization - capital_expenditure
+
+        after_tax_cash_profit = normalized_cash_profit * (1 - tax_rate)
+
+        enterprise_value = after_tax_cash_profit / minimum_cash_yield
+
+        equity_value = enterprise_value - total_debt + cash_and_cash_equivalents
+
+        epv_per_share = equity_value / shares_outstanding
+
+        print(f"Earnings Power Value (EPV) Per Share ==> ${epv_per_share:.2f}")
+
+        return epv_per_share

@@ -7,8 +7,21 @@ functions = FunctionsToRun()
 
 ###########################################################
 
-STOCK_TICKER = "KO"
-CURRENT_SHARE_PRICE = 0
+STOCK_TICKER = "DFS"
+CURRENT_SHARE_PRICE = 222.70
+MINIMUM_CASH_YIELD = 0.08 # USE AT LEAST 5%
+
+"""
+MINIMUM_CASH_YIELD --> Risk Mitigation: A higher starting
+cash yield reduces the reliance on future growth,
+lowering investment risk.
+
+Large and less risky companies --> 7% to 9%
+
+Smaller and more risky --> 10% to 12%
+
+Very small and very risky --> 15% or more
+"""
 
 ###########################################################
 
@@ -22,8 +35,8 @@ if __name__ == "__main__":
     # dividends = fetch_financial_data.fetch_dividend_history_data_from_fmp(stock_ticker=STOCK_TICKER)
 
     # functions.book_value_per_share(fmp_income_statements, fmp_balance_sheets)
-    # print("\n")
-    # company_tax_rates = functions.company_effective_tax_rate(fmp_income_statements)
+    print("\n")
+    company_tax_rates = functions.company_effective_tax_rate(fmp_income_statements)
     # print("\n")
     # roce = functions.return_on_capital_employed_ratio(fmp_income_statements, fmp_balance_sheets)
     # print("\n")
@@ -67,5 +80,19 @@ if __name__ == "__main__":
     # print("\n")
     # functions.interest_cover_ratio(fmp_income_statements)
 
+    # Valuing A Company's Shares
+
     print("\n")
-    functions.owner_earnings(fmp_income_statements, fmp_cash_flows)
+    owner_earnings = functions.owner_earnings(fmp_income_statements, fmp_cash_flows)
+    print("\n")
+    cash_interest_rate = functions.calculate_cash_interest_rate(owner_earnings, CURRENT_SHARE_PRICE)
+    print("\n")
+    desired_price_cash_yield = functions.calculate_desired_price_with_cash_yield(owner_earnings, MINIMUM_CASH_YIELD)
+    print("\n")
+    desired_price_epv = functions.calculate_desired_price_with_epv(
+        fmp_income_statements, fmp_balance_sheets, fmp_cash_flows,
+        company_tax_rates, MINIMUM_CASH_YIELD
+    )
+
+
+# FIX THE REPORT DATES TO BE IN CORRECT ORDER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
