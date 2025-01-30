@@ -45,7 +45,7 @@ class FunctionsToRun:
 
             effective_tax_rates[report_date] = round(company_effective_tax_rate, 2)
 
-            company_effective_tax_rate * 100
+            company_effective_tax_rate = company_effective_tax_rate * 100
 
             print(f"Effective Tax Rate (for year - {report_date}) ==> {company_effective_tax_rate:.2f} %")
 
@@ -580,7 +580,7 @@ class FunctionsToRun:
 
 
     def owner_earnings(
-        self, fmp_income_statements: pd.DataFrame, fmp_cash_flows: pd.DataFrame
+        self, fmp_income_statements: pd.DataFrame, fmp_cash_flow_statements: pd.DataFrame
     ) -> dict:
 
         """
@@ -588,11 +588,14 @@ class FunctionsToRun:
         to calculate the 'Maintenance Capex'
         """
 
+        income_statements = fmp_income_statements.sort_values(by="date", ascending=False)
+        cash_flows = fmp_cash_flow_statements.sort_values(by="date", ascending=False)
+
         divider = 0
         sum_of_capex = 0
         owner_earnings_dict = {}
 
-        for _, row in fmp_cash_flows.iterrows():
+        for _, row in cash_flows.iterrows():
             capex = abs(row["capitalExpenditure"]) # Get absolute value (remove negative sign)
 
             sum_of_capex += capex
@@ -602,10 +605,10 @@ class FunctionsToRun:
         # Calculate the historical average CapEx...
         maintenance_capex = sum_of_capex / divider
 
-        net_income = fmp_income_statements["netIncome"].iloc[0]
-        depreciation_and_amortization = fmp_income_statements["depreciationAndAmortization"].iloc[0]
-        other_non_cash_items = fmp_cash_flows["otherNonCashItems"].iloc[0]
-        shares_outstanding = fmp_income_statements["weightedAverageShsOut"].iloc[0]
+        net_income = income_statements["netIncome"].iloc[0]
+        depreciation_and_amortization = income_statements["depreciationAndAmortization"].iloc[0]
+        other_non_cash_items = cash_flows["otherNonCashItems"].iloc[0]
+        shares_outstanding = income_statements["weightedAverageShsOut"].iloc[0]
 
         owner_earnings = net_income + depreciation_and_amortization + other_non_cash_items - maintenance_capex
         owner_earnings_per_share = owner_earnings / shares_outstanding
@@ -638,7 +641,9 @@ class FunctionsToRun:
         return cash_interest_rate
 
 
-    def calculate_desired_price_with_cash_yield(self, owner_earnings: dict, minimum_cash_yield: float) -> float:
+    def calculate_desired_price_with_cash_yield(
+        self, owner_earnings: dict, minimum_cash_yield: float
+    ) -> float:
 
         """
         Determine a fair buying price for a stock by setting a
@@ -708,3 +713,37 @@ class FunctionsToRun:
         print(f"Earnings Power Value (EPV) Per Share ==> ${epv_per_share:.2f}")
 
         return epv_per_share
+
+
+    def calculate_maximum_and_ideal_prices(
+        self, owner_earnings: dict, interest_rate: float, margin_of_safety: float
+    ) -> float:
+
+        """
+        This calculation focuses on determining the maximum price you
+        should pay for a company’s shares based on its cash profits
+        (or "owner earnings") relative to prevailing interest
+        rates (adjusted for inflation and risk).
+        """
+
+        ideal_prices_and_cash_yield = {}
+
+        # Cash Profit Per Share
+        owner_earnings_per_share = owner_earnings.get("owner_earnings_per_share")
+
+        maximum_price = owner_earnings_per_share / interest_rate
+
+        # Price with Margin of Safety
+        ideal_price_with_mos = maximum_price * (1 - margin_of_safety)
+
+        cash_yield_at_ideal_price = (owner_earnings_per_share / ideal_price_with_mos) * 100
+
+        print(f"Maximum Price ==> ${maximum_price:.2f}")
+        print(f"Ideal Price ({(margin_of_safety * 100):.2f}% Discount) ==> ${ideal_price_with_mos:.2f}")
+        print(f"Cash Yield at Ideal Price ==> {cash_yield_at_ideal_price:.2f}%")
+
+        ideal_prices_and_cash_yield["maximum_price"] = maximum_price
+        ideal_prices_and_cash_yield["ideal_price"] = ideal_price_with_mos
+        ideal_prices_and_cash_yield["cash_yield_ideal_price"] = cash_yield_at_ideal_price
+
+        return ideal_prices_and_cash_yield
