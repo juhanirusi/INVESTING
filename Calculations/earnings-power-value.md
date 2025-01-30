@@ -7,7 +7,7 @@
 *Earnings Power Value (EPV) estimates the value of a company based solely on its current, normalized cash profits, assuming no future growth. It focuses on what the business is worth today, given its ability to generate steady profits over time.*
 
 
-## Example Calculation:
+## Example Calculation
 
 
 Suppose we have the following data:
@@ -44,6 +44,9 @@ Suppose we have the following data:
 5. EPV Per Share:
 
     - EPV Per Share = Equity Value / Shares Outstanding ==> 6,100 / 500 = $12.20 per share
+
+
+***
 
 
 ## Why It's Useful
