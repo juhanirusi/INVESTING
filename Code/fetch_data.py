@@ -14,7 +14,7 @@ class FetchFinancialData:
         self.DATA_PERIOD = "annual"
 
 
-    def fetch_income_statements_from_fmp(self, stock_ticker):
+    def fetch_income_statements_from_fmp(self, stock_ticker) -> pd.DataFrame:
 
         URL = f"{self.FMP_BASE_URL}/income-statement/{stock_ticker}"
 
@@ -24,12 +24,12 @@ class FetchFinancialData:
 
         income_statements = income_statements.sort_values(by="date")
 
-        print(income_statements.columns)
+        # print(income_statements.columns)
 
         return income_statements
 
 
-    def fetch_balance_sheets_from_fmp(self, stock_ticker):
+    def fetch_balance_sheets_from_fmp(self, stock_ticker) -> pd.DataFrame:
 
         URL = f"{self.FMP_BASE_URL}/balance-sheet-statement/{stock_ticker}"
 
@@ -39,12 +39,12 @@ class FetchFinancialData:
 
         balance_sheets = balance_sheets.sort_values(by="date")
 
-        print(balance_sheets.columns)
+        # print(balance_sheets.columns)
 
         return balance_sheets
 
 
-    def fetch_cash_flow_statements_from_fmp(self, stock_ticker):
+    def fetch_cash_flow_statements_from_fmp(self, stock_ticker) -> pd.DataFrame:
 
         URL = f"{self.FMP_BASE_URL}/cash-flow-statement/{stock_ticker}?period={self.DATA_PERIOD}&apikey={self.FMP_API_KEY}"
 
@@ -54,12 +54,12 @@ class FetchFinancialData:
 
         cash_flow_statements = cash_flow_statements.sort_values(by="date")
 
-        print(cash_flow_statements.columns)
+        # print(cash_flow_statements.columns)
 
         return cash_flow_statements
 
 
-    def fetch_dividend_history_data_from_fmp(self, stock_ticker):
+    def fetch_dividend_history_data_from_fmp(self, stock_ticker) -> pd.DataFrame:
 
         URL = f"{self.FMP_BASE_URL}/historical-price-full/stock_dividend/{stock_ticker}?apikey={self.FMP_API_KEY}"
 
@@ -75,7 +75,5 @@ class FetchFinancialData:
 
         dividend_history_data = dividend_history_data.set_index("dividend_year")["dividend"].to_dict()
         dividend_history_data = {int(key): value for key, value in dividend_history_data.items()}
-
-        print(dividend_history_data)
 
         return dividend_history_data
