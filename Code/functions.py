@@ -3,10 +3,12 @@ import pandas as pd
 
 class FunctionsToRun:
 
-
     def book_value_per_share(
-        self, fmp_income_statements: pd.DataFrame, fmp_balance_sheets: pd.DataFrame
-    ) -> dict:
+        self,
+        fmp_income_statements: pd.DataFrame,
+        fmp_balance_sheets: pd.DataFrame,
+        analyze_one_company: bool
+    ):
 
         book_values_per_share = {}
 
@@ -25,7 +27,15 @@ class FunctionsToRun:
 
             book_values_per_share[report_date] = bvps
 
-            print(f"Book Value Per Share (for year - {report_date}) ==> ${bvps:.2f}")
+            if analyze_one_company:
+                print(f"Book Value Per Share (for year - {report_date}) ==> ${bvps:.2f}")
+
+        if not analyze_one_company: # Return the latest book value per share
+            max_date = max(book_values_per_share.keys())
+            book_value_per_share = book_values_per_share[max_date]
+            print(book_value_per_share)
+
+            return book_value_per_share
 
         return book_values_per_share
 
@@ -282,11 +292,12 @@ class FunctionsToRun:
 
             report_date = income_statement["date"]
 
-            ctdr = (capital_expenditure / depreciation_and_amortization) * 100
-
-            capex_to_depreciation_ratios[report_date] = ctdr
-
-            print(f"Capex to Depreciation Ratio (for year - {report_date}) ==> {ctdr:.2f} %")
+            try:
+                ctdr = (capital_expenditure / depreciation_and_amortization) * 100
+                capex_to_depreciation_ratios[report_date] = ctdr
+                print(f"Capex to Depreciation Ratio (for year - {report_date}) ==> {ctdr:.2f} %")
+            except ZeroDivisionError:
+                print("CALCULATION FAILED !!!")
 
         return capex_to_depreciation_ratios
 
@@ -442,11 +453,12 @@ class FunctionsToRun:
 
             dividend_per_share = dividends.get(report_year)
 
-            fcfdc = free_cash_flow_per_share / dividend_per_share
-
-            free_cash_flow_dividend_cover_ratios[report_date] = fcfdc
-
-            print(f"Free Cash Flow Dividend Cover Ratio (for year - {report_date}) ==> {fcfdc:.2f}")
+            try:
+                fcfdc = free_cash_flow_per_share / dividend_per_share
+                free_cash_flow_dividend_cover_ratios[report_date] = fcfdc
+                print(f"Free Cash Flow Dividend Cover Ratio (for year - {report_date}) ==> {fcfdc:.2f}")
+            except TypeError:
+                print("NO DIVIDEND !!!")
 
         return free_cash_flow_dividend_cover_ratios
 
@@ -570,11 +582,12 @@ class FunctionsToRun:
 
             report_date = row["date"]
 
-            icr = (operating_income / interest_payable)
-
-            interest_cover_ratios[report_date] = icr
-
-            print(f"Interest Cover Ratio (for year - {report_date}) ==> {icr:.2f}")
+            try:
+                icr = (operating_income / interest_payable)
+                interest_cover_ratios[report_date] = icr
+                print(f"Interest Cover Ratio (for year - {report_date}) ==> {icr:.2f}")
+            except ZeroDivisionError:
+                print("CALCULATION FAILED !!!")
 
         return interest_cover_ratios
 
