@@ -1,15 +1,16 @@
 import pandas as pd
 
 
-class FunctionsToRun:
+class CalculationsToMake:
+
+    def __init__(self, analyze_one_company):
+        self.ANALYZE_ONE_COMPANY = analyze_one_company
 
     def book_value_per_share(
         self,
         fmp_income_statements: pd.DataFrame,
         fmp_balance_sheets: pd.DataFrame,
-        analyze_one_company: bool
     ):
-
         book_values_per_share = {}
 
         financial_statements = zip(
@@ -27,13 +28,13 @@ class FunctionsToRun:
 
             book_values_per_share[report_date] = bvps
 
-            if analyze_one_company:
+            if self.ANALYZE_ONE_COMPANY:
                 print(f"Book Value Per Share (for year - {report_date}) ==> ${bvps:.2f}")
 
-        if not analyze_one_company: # Return the latest book value per share
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest book value per share
             max_date = max(book_values_per_share.keys())
             book_value_per_share = book_values_per_share[max_date]
-            print(book_value_per_share)
+            book_value_per_share = round(book_value_per_share, 2)
 
             return book_value_per_share
 
@@ -57,7 +58,14 @@ class FunctionsToRun:
 
             company_effective_tax_rate = company_effective_tax_rate * 100
 
-            print(f"Effective Tax Rate (for year - {report_date}) ==> {company_effective_tax_rate:.2f} %")
+            if self.ANALYZE_ONE_COMPANY:
+                print(f"Effective Tax Rate (for year - {report_date}) ==> {company_effective_tax_rate:.2f} %")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest effective tax rate
+            max_date = max(effective_tax_rates.keys())
+            effective_tax_rate = effective_tax_rates[max_date]
+
+            return effective_tax_rate
 
         return effective_tax_rates
 
@@ -85,7 +93,15 @@ class FunctionsToRun:
 
             return_on_capital_employed_ratios[report_date] = roce
 
-            print(f"Return on Capital Employed Ratio (for year - {report_date}) ==> {roce:.2f} %")
+            if self.ANALYZE_ONE_COMPANY:
+                print(f"Return on Capital Employed Ratio (for year - {report_date}) ==> {roce:.2f} %")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest return on capital employed ratio
+            max_date = max(return_on_capital_employed_ratios.keys())
+            return_on_capital_employed_ratio = return_on_capital_employed_ratios[max_date]
+            return_on_capital_employed_ratio = round(roce, 2)
+
+            return return_on_capital_employed_ratio
 
         return return_on_capital_employed_ratios
 
