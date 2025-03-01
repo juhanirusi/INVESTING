@@ -12,7 +12,7 @@ class FetchFinancialData:
         self.FMP_BASE_URL = "https://financialmodelingprep.com/api/v3"
         self.FMP_API_KEY = os.getenv("FMP_API_KEY")
         self.DATA_PERIOD = "annual"
-
+        self.STOCK_EXCHANGES = ["NASDAQ", "NYSE"]
 
     def fetch_income_statements_from_fmp(self, stock_ticker) -> pd.DataFrame:
 
@@ -77,3 +77,20 @@ class FetchFinancialData:
         dividend_history_data = {int(key): value for key, value in dividend_history_data.items()}
 
         return dividend_history_data
+
+
+    def fetch_stock_tickers_into_csv_file(self) -> pd.DataFrame:
+
+        URL = f"{self.FMP_BASE_URL}/stock/list"
+
+        stock_tickers = requests.get(URL, params={"apikey": self.FMP_API_KEY}).json()
+
+        stock_tickers = pd.DataFrame(data=stock_tickers)
+
+        stock_tickers = stock_tickers.loc[stock_tickers["exchangeShortName"].isin(self.STOCK_EXCHANGES)]
+        stock_tickers = stock_tickers.loc[stock_tickers["type"] == "stock"]
+        stock_tickers = stock_tickers.sort_values(by="symbol", ascending=True)
+
+        stock_tickers = stock_tickers[["symbol", "name", "price", "exchangeShortName"]]
+
+        return stock_tickers
