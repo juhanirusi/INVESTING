@@ -1,15 +1,23 @@
+import time
+
+from calculate_ratios_and_value import CalculateRatiosAndCompanyValue
 from fetch_data import FetchFinancialData
-from functions import FunctionsToRun
-
-fetch_financial_data = FetchFinancialData()
-functions = FunctionsToRun()
-
+from functions import CalculationsToMake
+from utils import CleanData, WorkWithDataFrame
 
 ###########################################################
 
-STOCK_TICKER = "DFS"
-CURRENT_SHARE_PRICE = 222.70
+ANALYZE_ONE_COMPANY = False
+
+STOCK_TICKER = "ALSN"
+CURRENT_SHARE_PRICE = 101.00
+
 MINIMUM_CASH_YIELD = 0.08 # USE AT LEAST 5%
+INTEREST_RATE = 0.0457 # 4.57% (Average U.S. 10 Year Treasury Yield)
+MARGIN_OF_SAFETY = 0.15 # 15%
+
+PATH_TO_SAVE_STOCK_TICKERS = r"C:\Users\juhan\OneDrive\Omat Tiedostot\GitHub\INVESTING\Code\Data\stock_tickers.csv"
+PATH_TO_SAVE_COMPANY_VALUATIONS = r"C:\Users\juhan\OneDrive\Omat Tiedostot\GitHub\INVESTING\Code\Data\company_valuations.csv"
 
 """
 MINIMUM_CASH_YIELD --> Risk Mitigation: A higher starting
@@ -25,74 +33,112 @@ Very small and very risky --> 15% or more
 
 ###########################################################
 
+work_with_dataframe = WorkWithDataFrame(
+    stock_tickers_path=PATH_TO_SAVE_STOCK_TICKERS,
+    company_valuations_path=PATH_TO_SAVE_COMPANY_VALUATIONS
+)
+clean_data = CleanData()
+
+fetch_financial_data = FetchFinancialData()
+functions = CalculationsToMake(analyze_one_company=ANALYZE_ONE_COMPANY)
+calculate_ratios_and_value = CalculateRatiosAndCompanyValue()
+
+###########################################################
+
 
 if __name__ == "__main__":
 
-    fmp_income_statements = fetch_financial_data.fetch_income_statements_from_fmp(stock_ticker=STOCK_TICKER)
-    fmp_balance_sheets = fetch_financial_data.fetch_balance_sheets_from_fmp(stock_ticker=STOCK_TICKER)
-    fmp_cash_flows = fetch_financial_data.fetch_cash_flow_statements_from_fmp(stock_ticker=STOCK_TICKER)
-
-    # dividends = fetch_financial_data.fetch_dividend_history_data_from_fmp(stock_ticker=STOCK_TICKER)
-
-    # functions.book_value_per_share(fmp_income_statements, fmp_balance_sheets)
-    print("\n")
-    company_tax_rates = functions.company_effective_tax_rate(fmp_income_statements)
-    # print("\n")
-    # roce = functions.return_on_capital_employed_ratio(fmp_income_statements, fmp_balance_sheets)
-    # print("\n")
-    # functions.rising_earnings_through_time(fmp_income_statements)
-    # print("\n")
-
-    #########################################################################
-    # A operating cash conversion ratio of at least 100% and a depreciation
-    # to operating cash flow ratio of under 30% make for a good compination
-
-    # functions.operating_cash_conversion_ratio(fmp_income_statements, fmp_cash_flows)
-    # print("\n")
-    # functions.depreciation_to_operating_cash_flow_ratio(fmp_cash_flows)
-    #########################################################################
-
-    # print("\n")
-    # functions.inventory_and_stock_ratio(fmp_income_statements, fmp_balance_sheets) # <-- Manufacturing & Retail Companies
-    # print("\n")
-    # functions.debtor_ratio(fmp_income_statements, fmp_balance_sheets)
-    # print("\n")
-    # functions.capex_ratio(fmp_cash_flows)
-    # print("\n")
-    # functions.capex_to_depreciation_ratio(fmp_income_statements, fmp_cash_flows)
-    # print("\n")
-    # functions.cash_return_on_capital_invested_ratio(fmp_balance_sheets, fmp_cash_flows)
-    # print("\n")
-    # free_cash_flow_per_share = functions.free_cash_flow_per_share(fmp_income_statements, fmp_cash_flows)
-    # print("\n")
-    # functions.free_cash_flow_per_share_and_eps_difference_score(fmp_income_statements, free_cash_flow_per_share, roce)
-    # print("\n")
-    # functions.free_cash_flow_dividend_cover_ratio(free_cash_flow_per_share, dividends)
-
-    # Debt
-
-    # print("\n")
-    # functions.debt_to_free_cash_flow_ratio(fmp_balance_sheets, fmp_cash_flows)
-    # print("\n")
-    # functions.debt_to_net_operating_cash_flow_ratio(fmp_balance_sheets, fmp_cash_flows)
-    # print("\n")
-    # functions.debt_to_assets_ratio(fmp_balance_sheets)
-    # print("\n")
-    # functions.interest_cover_ratio(fmp_income_statements)
-
-    # Valuing A Company's Shares
-
-    print("\n")
-    owner_earnings = functions.owner_earnings(fmp_income_statements, fmp_cash_flows)
-    print("\n")
-    cash_interest_rate = functions.calculate_cash_interest_rate(owner_earnings, CURRENT_SHARE_PRICE)
-    print("\n")
-    desired_price_cash_yield = functions.calculate_desired_price_with_cash_yield(owner_earnings, MINIMUM_CASH_YIELD)
-    print("\n")
-    desired_price_epv = functions.calculate_desired_price_with_epv(
-        fmp_income_statements, fmp_balance_sheets, fmp_cash_flows,
-        company_tax_rates, MINIMUM_CASH_YIELD
+    stock_tickers = fetch_financial_data.fetch_stock_tickers_into_csv_file()
+    work_with_dataframe.save_dataframe_as_csv_file(
+        stock_tickers,
+        PATH_TO_SAVE_STOCK_TICKERS
     )
 
+    if not ANALYZE_ONE_COMPANY:
 
-# FIX THE REPORT DATES TO BE IN CORRECT ORDER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        company_valuations = work_with_dataframe.open_or_create_valuation_csv_file(
+            PATH_TO_SAVE_COMPANY_VALUATIONS
+        )
+
+        for _, stock in stock_tickers.iterrows():
+
+            if work_with_dataframe.stock_not_present_or_too_old_valuation(
+                stock["symbol"], company_valuations
+            ):
+                fmp_income_statements = fetch_financial_data.fetch_income_statements_from_fmp(stock_ticker=stock["symbol"])
+                fmp_balance_sheets = fetch_financial_data.fetch_balance_sheets_from_fmp(stock_ticker=stock["symbol"])
+                fmp_cash_flows = fetch_financial_data.fetch_cash_flow_statements_from_fmp(stock_ticker=stock["symbol"])
+
+                dividends = fetch_financial_data.fetch_dividend_history_data_from_fmp(stock_ticker=stock["symbol"])
+
+                # Skip this company if they don't have financial statements
+                if fmp_income_statements.empty or fmp_balance_sheets.empty or fmp_cash_flows.empty:
+                    continue
+
+                fmp_income_statements, fmp_balance_sheets, fmp_cash_flows, dividends = clean_data.keep_common_financial_reports(
+                    income_statements=fmp_income_statements,
+                    balance_sheets=fmp_balance_sheets,
+                    cash_flow_statements=fmp_cash_flows,
+                    dividends=dividends
+                )
+
+                calculate_ratios_and_value.financial_statements_and_constants(
+                    income_statements=fmp_income_statements,
+                    balance_sheets=fmp_balance_sheets,
+                    cash_flow_statements=fmp_cash_flows,
+                    dividend_history=dividends,
+                    analyze_one_company=ANALYZE_ONE_COMPANY,
+                    stock_price=stock["price"],
+                    minimum_cash_yield=MINIMUM_CASH_YIELD,
+                    interest_rate=INTEREST_RATE,
+                    margin_of_safety=MARGIN_OF_SAFETY
+                )
+
+                values_dict = calculate_ratios_and_value.calculate_ratios(functions)
+
+                company_valuations = work_with_dataframe.add_valuation_to_dataframe(
+                    stock_ticker=stock["symbol"],
+                    company_name=stock["name"],
+                    company_valuations=company_valuations,
+                    values_dict=values_dict,
+                    current_share_price=stock["price"]
+                )
+
+                work_with_dataframe.save_dataframe_as_csv_file(
+                    company_valuations,
+                    PATH_TO_SAVE_COMPANY_VALUATIONS,
+                )
+
+                time.sleep(1) # <-- Just in case to stay under FMP API limit
+
+            else:
+                continue
+
+    else:
+
+        fmp_income_statements = fetch_financial_data.fetch_income_statements_from_fmp(stock_ticker=STOCK_TICKER)
+        fmp_balance_sheets = fetch_financial_data.fetch_balance_sheets_from_fmp(stock_ticker=STOCK_TICKER)
+        fmp_cash_flows = fetch_financial_data.fetch_cash_flow_statements_from_fmp(stock_ticker=STOCK_TICKER)
+
+        dividends = fetch_financial_data.fetch_dividend_history_data_from_fmp(stock_ticker=STOCK_TICKER)
+
+        fmp_income_statements, fmp_balance_sheets, fmp_cash_flows, dividends = clean_data.keep_common_financial_reports(
+            income_statements=fmp_income_statements,
+            balance_sheets=fmp_balance_sheets,
+            cash_flow_statements=fmp_cash_flows,
+            dividends=dividends
+        )
+
+        calculate_ratios_and_value.financial_statements_and_constants(
+            income_statements=fmp_income_statements,
+            balance_sheets=fmp_balance_sheets,
+            cash_flow_statements=fmp_cash_flows,
+            dividend_history=dividends,
+            analyze_one_company=ANALYZE_ONE_COMPANY,
+            stock_price=CURRENT_SHARE_PRICE,
+            minimum_cash_yield=MINIMUM_CASH_YIELD,
+            interest_rate=INTEREST_RATE,
+            margin_of_safety=MARGIN_OF_SAFETY
+        )
+
+        calculate_ratios_and_value.calculate_ratios(functions)
