@@ -24,12 +24,17 @@ class CalculationsToMake:
 
             report_date = income_statement["date"]
 
-            bvps = shareholders_equity / weighted_average_shares_outstanding
+            try:
+                bvps = shareholders_equity / weighted_average_shares_outstanding
 
-            book_values_per_share[report_date] = bvps
+                book_values_per_share[report_date] = bvps
 
-            if self.ANALYZE_ONE_COMPANY:
-                print(f"Book Value Per Share (for year - {report_date}) ==> ${bvps:.2f}")
+            except ZeroDivisionError:
+                book_values_per_share[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Book Value Per Share (for year - {report_date}) ==> ${bvps:.2f}")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest book value per share
             max_date = max(book_values_per_share.keys())
@@ -41,7 +46,7 @@ class CalculationsToMake:
         return book_values_per_share
 
 
-    def company_effective_tax_rate(self, fmp_income_statements: pd.DataFrame) -> dict:
+    def company_effective_tax_rate(self, fmp_income_statements: pd.DataFrame):
 
         effective_tax_rates = {}
 
@@ -52,27 +57,32 @@ class CalculationsToMake:
 
             report_date = row["date"]
 
-            company_effective_tax_rate = (income_tax_expense / income_before_tax)
+            try:
+                company_effective_tax_rate = (income_tax_expense / income_before_tax)
 
-            effective_tax_rates[report_date] = round(company_effective_tax_rate, 2)
+                effective_tax_rates[report_date] = round(company_effective_tax_rate, 2)
 
-            company_effective_tax_rate = company_effective_tax_rate * 100
+                company_effective_tax_rate = company_effective_tax_rate * 100
 
-            if self.ANALYZE_ONE_COMPANY:
-                print(f"Effective Tax Rate (for year - {report_date}) ==> {company_effective_tax_rate:.2f} %")
+            except ZeroDivisionError:
+                effective_tax_rates[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Effective Tax Rate (for year - {report_date}) ==> {company_effective_tax_rate:.2f} %")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest effective tax rate
             max_date = max(effective_tax_rates.keys())
             effective_tax_rate = effective_tax_rates[max_date]
 
-            return effective_tax_rate
+            return effective_tax_rates, effective_tax_rate
 
-        return effective_tax_rates
+        return effective_tax_rates, None
 
 
     def return_on_capital_employed_ratio(
         self, fmp_income_statements: pd.DataFrame, fmp_balance_sheets: pd.DataFrame
-    ) -> dict:
+    ):
 
         return_on_capital_employed_ratios = {}
 
@@ -89,21 +99,26 @@ class CalculationsToMake:
 
             report_date = income_statement["date"]
 
-            roce = ebit / (total_assets - current_liabilities) * 100
+            try:
+                roce = ebit / (total_assets - current_liabilities) * 100
 
-            return_on_capital_employed_ratios[report_date] = roce
+                return_on_capital_employed_ratios[report_date] = roce
 
-            if self.ANALYZE_ONE_COMPANY:
-                print(f"Return on Capital Employed Ratio (for year - {report_date}) ==> {roce:.2f} %")
+            except ZeroDivisionError:
+                return_on_capital_employed_ratios[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Return on Capital Employed Ratio (for year - {report_date}) ==> {roce:.2f} %")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest return on capital employed ratio
             max_date = max(return_on_capital_employed_ratios.keys())
             return_on_capital_employed_ratio = return_on_capital_employed_ratios[max_date]
             return_on_capital_employed_ratio = round(roce, 2)
 
-            return return_on_capital_employed_ratio
+            return return_on_capital_employed_ratios, return_on_capital_employed_ratio
 
-        return return_on_capital_employed_ratios
+        return return_on_capital_employed_ratios, None
 
 
     def rising_earnings_through_time(self, fmp_income_statements: pd.DataFrame):
@@ -124,17 +139,30 @@ class CalculationsToMake:
                 operating_income_growth_years += 1
 
         # Assign points proportionally to the number of years with growth
-        gross_profit_points = (gross_profit_growth_years / total_years) * 10
-        operating_income_points = (operating_income_growth_years / total_years) * 10
 
-        # Print results, rounded to 2 decimal places
-        print(f"Gross Profit Points: {round(gross_profit_points, 2)} / 10")
-        print(f"Operating Income Points: {round(operating_income_points, 2)} / 10")
+        try:
+            gross_profit_points = (gross_profit_growth_years / total_years) * 10
+        except ZeroDivisionError:
+            gross_profit_points = 0
+
+        try:
+            operating_income_points = (operating_income_growth_years / total_years) * 10
+        except ZeroDivisionError:
+            operating_income_points = 0
+
+        if self.ANALYZE_ONE_COMPANY:
+            # Print results, rounded to 2 decimal places
+            print(f"Gross Profit Points: {round(gross_profit_points, 2)} / 10")
+            print(f"Operating Income Points: {round(operating_income_points, 2)} / 10")
+
+            return None, None
+        else:
+            return round(gross_profit_points, 2), round(operating_income_points, 2)
 
 
     def operating_cash_conversion_ratio(
         self, fmp_income_statements: pd.DataFrame, fmp_cash_flow_statements: pd.DataFrame
-    ) -> dict:
+    ):
 
         operating_cash_conversion_ratios = {}
 
@@ -149,16 +177,29 @@ class CalculationsToMake:
 
             report_date = income_statement["date"]
 
-            occr = (operating_cash_flow / operating_profit) * 100
+            try:
+                occr = (operating_cash_flow / operating_profit) * 100
 
-            operating_cash_conversion_ratios[report_date] = occr
+                operating_cash_conversion_ratios[report_date] = occr
 
-            print(f"Operating Cash Conversion Ratio (for year - {report_date}) ==> {occr:.2f} %")
+            except ZeroDivisionError:
+                operating_cash_conversion_ratios[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Operating Cash Conversion Ratio (for year - {report_date}) ==> {occr:.2f} %")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest operating cash conversion ratio
+            max_date = max(operating_cash_conversion_ratios.keys())
+            operating_cash_conversion_ratio = operating_cash_conversion_ratios[max_date]
+            operating_cash_conversion_ratio = round(operating_cash_conversion_ratio, 2)
+
+            return operating_cash_conversion_ratio
 
         return operating_cash_conversion_ratios
 
 
-    def depreciation_to_operating_cash_flow_ratio(self, fmp_cash_flow_statements: pd.DataFrame) -> dict:
+    def depreciation_to_operating_cash_flow_ratio(self, fmp_cash_flow_statements: pd.DataFrame):
 
         """
         'Depreciation to Operating Cash Flow Ratio' is calculated
@@ -184,19 +225,31 @@ class CalculationsToMake:
 
             report_date = row["date"]
 
-            dtocfr = (depreciation_and_amortization / operating_cash_flow) * 100
+            try:
+                dtocfr = (depreciation_and_amortization / operating_cash_flow) * 100
 
-            depreciation_to_operating_cash_flow_ratios[report_date] = dtocfr
+                depreciation_to_operating_cash_flow_ratios[report_date] = dtocfr
 
-            print(f"Depreciation to Operating Cash Flow Ratio (for year - {report_date}) ==> {dtocfr:.2f} %")
+            except ZeroDivisionError:
+                depreciation_to_operating_cash_flow_ratios[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Depreciation to Operating Cash Flow Ratio (for year - {report_date}) ==> {dtocfr:.2f} %")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest depreciation to operating cash flow ratio
+            max_date = max(depreciation_to_operating_cash_flow_ratios.keys())
+            depreciation_to_operating_cash_flow_ratio = depreciation_to_operating_cash_flow_ratios[max_date]
+            depreciation_to_operating_cash_flow_ratio = round(depreciation_to_operating_cash_flow_ratio, 2)
+
+            return depreciation_to_operating_cash_flow_ratio
 
         return depreciation_to_operating_cash_flow_ratios
 
 
     def inventory_and_stock_ratio(
         self, fmp_income_statements: pd.DataFrame, fmp_balance_sheets: pd.DataFrame
-    ) -> dict:
-
+    ):
         """
         Inventory and stock ratio compares the value of inventory against
         the company's revenue (turnover) to assess how much of the
@@ -216,18 +269,31 @@ class CalculationsToMake:
 
             report_date = income_statement["date"]
 
-            sr = (inventory / revenue) * 100
+            try:
+                sr = (inventory / revenue) * 100
 
-            inventory_and_stock_ratios[report_date] = sr
+                inventory_and_stock_ratios[report_date] = sr
 
-            print(f"Operating Cash Conversion Ratio (for year - {report_date}) ==> {sr:.2f} %")
+            except ZeroDivisionError:
+                inventory_and_stock_ratios[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Inventory and Stock Ratio (for year - {report_date}) ==> {sr:.2f} %")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest inventory and stock Ratio
+            max_date = max(inventory_and_stock_ratios.keys())
+            inventory_and_stock_ratio = inventory_and_stock_ratios[max_date]
+            inventory_and_stock_ratio = round(inventory_and_stock_ratio, 2)
+
+            return inventory_and_stock_ratio
 
         return inventory_and_stock_ratios
 
 
     def debtor_ratio(
         self, fmp_income_statements: pd.DataFrame, fmp_balance_sheets: pd.DataFrame
-    ) -> dict:
+    ):
 
         debtor_ratios = {}
 
@@ -242,16 +308,29 @@ class CalculationsToMake:
 
             report_date = income_statement["date"]
 
-            dr = (net_receivables / revenue) * 100
+            try:
+                dr = (net_receivables / revenue) * 100
 
-            debtor_ratios[report_date] = dr
+                debtor_ratios[report_date] = dr
 
-            print(f"Debtor Ratio (for year - {report_date}) ==> {dr:.2f} %")
+            except ZeroDivisionError:
+                debtor_ratios[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Debtor Ratio (for year - {report_date}) ==> {dr:.2f} %")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest debtor ratio
+            max_date = max(debtor_ratios.keys())
+            debtor_ratio = debtor_ratios[max_date]
+            debtor_ratio = round(debtor_ratio, 2)
+
+            return debtor_ratio
 
         return debtor_ratios
 
 
-    def capex_ratio(self, fmp_cash_flow_statements: pd.DataFrame) -> dict:
+    def capex_ratio(self, fmp_cash_flow_statements: pd.DataFrame):
 
         """
         A low Capex ratio (typically below 30%) suggests that the company
@@ -270,18 +349,31 @@ class CalculationsToMake:
 
             report_date = row["date"]
 
-            cr = (capital_expenditure / operating_cash_flow) * 100
+            try:
+                cr = (capital_expenditure / operating_cash_flow) * 100
 
-            capex_ratios[report_date] = cr
+                capex_ratios[report_date] = cr
 
-            print(f"Capex Ratio (for year - {report_date}) ==> {cr:.2f} %")
+            except ZeroDivisionError:
+                capex_ratios[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Capex Ratio (for year - {report_date}) ==> {cr:.2f} %")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest CapEx ratio
+            max_date = max(capex_ratios.keys())
+            capex_ratio = capex_ratios[max_date]
+            capex_ratio = round(capex_ratio, 2)
+
+            return capex_ratio
 
         return capex_ratios
 
 
     def capex_to_depreciation_ratio(
         self, fmp_income_statements: pd.DataFrame, fmp_cash_flow_statements: pd.DataFrame
-    ) -> dict:
+    ):
 
         """
         Comparing this ratio with industry peers and historical data can
@@ -311,16 +403,27 @@ class CalculationsToMake:
             try:
                 ctdr = (capital_expenditure / depreciation_and_amortization) * 100
                 capex_to_depreciation_ratios[report_date] = ctdr
-                print(f"Capex to Depreciation Ratio (for year - {report_date}) ==> {ctdr:.2f} %")
+
             except ZeroDivisionError:
-                print("CALCULATION FAILED !!!")
+                capex_to_depreciation_ratios[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Capex to Depreciation Ratio (for year - {report_date}) ==> {ctdr:.2f} %")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest CapEx to Depreciation Ratio
+            max_date = max(capex_to_depreciation_ratios.keys())
+            capex_to_depreciation_ratio = capex_to_depreciation_ratios[max_date]
+            capex_to_depreciation_ratio = round(capex_to_depreciation_ratio, 2)
+
+            return capex_to_depreciation_ratio
 
         return capex_to_depreciation_ratios
 
 
     def cash_return_on_capital_invested_ratio(
         self, fmp_balance_sheets: pd.DataFrame, fmp_cash_flow_statements: pd.DataFrame
-    ) -> dict:
+    ):
 
         """
         A Cash Return on Capital Invested of at least 10% indicates that
@@ -345,6 +448,8 @@ class CalculationsToMake:
                 total_assets = balance_sheet["totalAssets"]
                 current_liabilities = balance_sheet["totalCurrentLiabilities"]
 
+                report_date = balance_sheet["date"]
+
                 capital_employed = total_assets - current_liabilities
                 capital_employed_last_year = total_assets_last_year - current_liabilities_last_year
 
@@ -356,23 +461,38 @@ class CalculationsToMake:
                 # Free Cash Flow to the Firm
                 fcff = operating_cash_flow - capital_expenditure
 
-                croci = (fcff / average_capital_employed) * 100
+                try:
+                    croci = (fcff / average_capital_employed) * 100
 
-                report_date = balance_sheet["date"]
+                    cash_return_on_capital_invested_ratios[report_date] = croci
 
-                cash_return_on_capital_invested_ratios[report_date] = croci
+                except ZeroDivisionError:
+                    cash_return_on_capital_invested_ratios[report_date] = 0.00
 
-                print(f"Cash Return on Capital Invested (for year - {report_date}) ==> {croci:.2f} %")
+                finally:
+                    if self.ANALYZE_ONE_COMPANY:
+                        print(f"Cash Return on Capital Invested (for year - {report_date}) ==> {croci:.2f} %")
 
             total_assets_last_year = balance_sheet["totalAssets"]
             current_liabilities_last_year = balance_sheet["totalCurrentLiabilities"]
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest Cash Return on Capital Invested ratio
+
+            try:
+                max_date = max(cash_return_on_capital_invested_ratios.keys())
+                cash_return_on_capital_invested_ratio = cash_return_on_capital_invested_ratios[max_date]
+                cash_return_on_capital_invested_ratio = round(cash_return_on_capital_invested_ratio, 2)
+            except ValueError:
+                cash_return_on_capital_invested_ratio = 0.00
+            finally:
+                return cash_return_on_capital_invested_ratio
 
         return cash_return_on_capital_invested_ratios
 
 
     def free_cash_flow_per_share(
         self, fmp_income_statements: pd.DataFrame, fmp_cash_flow_statements: pd.DataFrame
-    ) -> dict:
+    ):
 
         free_cash_flows_per_share = {}
 
@@ -385,21 +505,36 @@ class CalculationsToMake:
             free_cash_flow = cash_flow_statement["freeCashFlow"]
             weighted_average_shares_outsanding = income_statement["weightedAverageShsOut"]
 
-            fcfps = free_cash_flow / weighted_average_shares_outsanding
-
             report_date = income_statement["date"]
 
-            free_cash_flows_per_share[report_date] = fcfps
+            try:
+                fcfps = free_cash_flow / weighted_average_shares_outsanding
 
-            print(f"Free Cash Flow Per Share (for year - {report_date}) ==> ${fcfps:.2f}")
+                free_cash_flows_per_share[report_date] = fcfps
 
-        return free_cash_flows_per_share
+            except ZeroDivisionError:
+                free_cash_flows_per_share[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Free Cash Flow Per Share (for year - {report_date}) ==> ${fcfps:.2f}")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest Free Cash Flow Per Share
+            max_date = max(free_cash_flows_per_share.keys())
+            free_cash_flow_per_share = free_cash_flows_per_share[max_date]
+            free_cash_flow_per_share = round(free_cash_flow_per_share, 2)
+
+            return free_cash_flows_per_share, free_cash_flow_per_share
+
+        return free_cash_flows_per_share, None
 
 
     def free_cash_flow_per_share_and_eps_difference_score(
-        self, fmp_income_statements: pd.DataFrame, free_cash_flows_per_share: dict, roce: dict
-    ) -> dict:
-
+        self,
+        fmp_income_statements: pd.DataFrame,
+        free_cash_flows_per_share: dict,
+        roce: dict
+    ):
         """
         1 --> EPS is negative - AVOID
         2 --> FCF per share is negative - AVOID
@@ -439,17 +574,29 @@ class CalculationsToMake:
                     elif free_cash_flow_per_share <= 0:
                         score = 2
 
-                print(f"Free Cash Flow Per Share & EPS Difference Score: {score}/5")
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Free Cash Flow Per Share & EPS Difference Score: {score}/5")
+
+                fcfps_and_eps_difference_statuses[report_date] = score
 
             roce_previous = roce.get(row["date"])
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest Free Cash Flow Per Share & EPS Difference Score
+
+            try:
+                max_date = max(fcfps_and_eps_difference_statuses.keys())
+                fcfps_and_eps_difference_status = fcfps_and_eps_difference_statuses[max_date]
+            except ValueError:
+                fcfps_and_eps_difference_status = 0
+            finally:
+                return fcfps_and_eps_difference_status
 
         return fcfps_and_eps_difference_statuses
 
 
     def free_cash_flow_dividend_cover_ratio(
         self, free_cash_flow_per_shares: dict, dividends: dict
-    ) -> dict:
-
+    ):
         """
         If free cash flow is sufficient to pay dividends,
         then the ratio will be more than 1
@@ -469,20 +616,31 @@ class CalculationsToMake:
 
             dividend_per_share = dividends.get(report_year)
 
-            try:
-                fcfdc = free_cash_flow_per_share / dividend_per_share
-                free_cash_flow_dividend_cover_ratios[report_date] = fcfdc
-                print(f"Free Cash Flow Dividend Cover Ratio (for year - {report_date}) ==> {fcfdc:.2f}")
-            except TypeError:
-                print("NO DIVIDEND !!!")
+            if dividend_per_share != None:
+
+                try:
+                    fcfdc = free_cash_flow_per_share / dividend_per_share
+                    free_cash_flow_dividend_cover_ratios[report_date] = fcfdc
+
+                    if self.ANALYZE_ONE_COMPANY:
+                        print(f"Free Cash Flow Dividend Cover Ratio (for year - {report_date}) ==> {fcfdc:.2f}")
+
+                except TypeError:
+                    print("NO DIVIDEND !!!")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest Free Cash Flow Dividend Cover Ratio
+            max_date = max(free_cash_flow_dividend_cover_ratios.keys())
+            free_cash_flow_dividend_cover_ratio = free_cash_flow_dividend_cover_ratios[max_date]
+            free_cash_flow_dividend_cover_ratio = round(free_cash_flow_dividend_cover_ratio, 2)
+
+            return free_cash_flow_dividend_cover_ratio
 
         return free_cash_flow_dividend_cover_ratios
 
 
     def debt_to_free_cash_flow_ratio(
         self, fmp_balance_sheets: pd.DataFrame, fmp_cash_flows: pd.DataFrame
-    ) -> dict:
-
+    ):
         """
         How many years would it take for the company to pay
         back it's debt based on it's free cash flow.
@@ -504,19 +662,31 @@ class CalculationsToMake:
 
             report_date = balance_sheet["date"]
 
-            dtfcfr = (total_debt / free_cash_flow)
+            try:
+                dtfcfr = (total_debt / free_cash_flow)
 
-            debt_to_free_cash_flow_ratios[report_date] = dtfcfr
+                debt_to_free_cash_flow_ratios[report_date] = dtfcfr
 
-            print(f"Debt To Free Cash Flow Ratio (for year - {report_date}) ==> {dtfcfr:.2f}")
+            except ZeroDivisionError:
+                debt_to_free_cash_flow_ratios[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Debt To Free Cash Flow Ratio (for year - {report_date}) ==> {dtfcfr:.2f}")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest Debt To Free Cash Flow Ratio
+            max_date = max(debt_to_free_cash_flow_ratios.keys())
+            debt_to_free_cash_flow_ratio = debt_to_free_cash_flow_ratios[max_date]
+            debt_to_free_cash_flow_ratio = round(debt_to_free_cash_flow_ratio, 2)
+
+            return debt_to_free_cash_flow_ratio
 
         return debt_to_free_cash_flow_ratios
 
 
     def debt_to_net_operating_cash_flow_ratio(
         self, fmp_balance_sheets: pd.DataFrame, fmp_cash_flows: pd.DataFrame
-    ) -> dict:
-
+    ):
         """
         You wouldn't really want to see a debt to net operating
         cash flow ratio of more than 3, because once you are
@@ -538,18 +708,29 @@ class CalculationsToMake:
 
             report_date = balance_sheet["date"]
 
-            dtnocfr = (total_debt / net_operating_cash_flow)
+            try:
+                dtnocfr = (total_debt / net_operating_cash_flow)
 
-            debt_to_net_operating_cash_flow_ratios[report_date] = dtnocfr
+                debt_to_net_operating_cash_flow_ratios[report_date] = dtnocfr
 
-            print(f"Debt To Net Operating Cash Flow Ratio (for year - {report_date}) ==> {dtnocfr:.2f}")
+            except ZeroDivisionError:
+                debt_to_net_operating_cash_flow_ratios[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Debt To Net Operating Cash Flow Ratio (for year - {report_date}) ==> {dtnocfr:.2f}")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest Debt To Net Operating Cash Flow Ratio
+            max_date = max(debt_to_net_operating_cash_flow_ratios.keys())
+            debt_to_net_operating_cash_flow_ratio = debt_to_net_operating_cash_flow_ratios[max_date]
+            debt_to_net_operating_cash_flow_ratio = round(debt_to_net_operating_cash_flow_ratio, 2)
+
+            return debt_to_net_operating_cash_flow_ratio
 
         return debt_to_net_operating_cash_flow_ratios
 
 
-    def debt_to_assets_ratio(
-        self, fmp_balance_sheets: pd.DataFrame
-    ) -> dict:
+    def debt_to_assets_ratio(self, fmp_balance_sheets: pd.DataFrame):
 
         """
         Debt to assets is very much like a loan-to-value measure
@@ -571,19 +752,31 @@ class CalculationsToMake:
 
             report_date = row["date"]
 
-            dtar = (total_debt / total_assets) * 100
+            try:
+                dtar = (total_debt / total_assets) * 100
 
-            debt_to_assets_ratios[report_date] = dtar
+                debt_to_assets_ratios[report_date] = dtar
 
-            print(f"Debt to Assets Ratio (for year - {report_date}) ==> {dtar:.2f} %")
+            except ZeroDivisionError:
+                debt_to_assets_ratios[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Debt to Assets Ratio (for year - {report_date}) ==> {dtar:.2f} %")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest Debt to Assets Ratio
+            max_date = max(debt_to_assets_ratios.keys())
+            debt_to_assets_ratio = debt_to_assets_ratios[max_date]
+            debt_to_assets_ratio = round(debt_to_assets_ratio, 2)
+
+            return debt_to_assets_ratio
 
         return debt_to_assets_ratios
 
 
     def interest_cover_ratio(
         self, fmp_income_statements: pd.DataFrame
-    ) -> dict:
-
+    ):
         """
         The higher the ratio, the better, but it's
         preferable to have a ratio that's at least 5.
@@ -601,9 +794,20 @@ class CalculationsToMake:
             try:
                 icr = (operating_income / interest_payable)
                 interest_cover_ratios[report_date] = icr
-                print(f"Interest Cover Ratio (for year - {report_date}) ==> {icr:.2f}")
+
             except ZeroDivisionError:
-                print("CALCULATION FAILED !!!")
+                interest_cover_ratios[report_date] = 0.00
+
+            finally:
+                if self.ANALYZE_ONE_COMPANY:
+                    print(f"Interest Cover Ratio (for year - {report_date}) ==> {icr:.2f}")
+
+        if not self.ANALYZE_ONE_COMPANY: # Return the latest Interest Cover Ratio
+            max_date = max(interest_cover_ratios.keys())
+            interest_cover_ratio = interest_cover_ratios[max_date]
+            interest_cover_ratio = round(interest_cover_ratio, 2)
+
+            return interest_cover_ratio
 
         return interest_cover_ratios
 
@@ -642,11 +846,12 @@ class CalculationsToMake:
         owner_earnings = net_income + depreciation_and_amortization + other_non_cash_items - maintenance_capex
         owner_earnings_per_share = owner_earnings / shares_outstanding
 
-        owner_earnings_dict["owner_earnings"] = owner_earnings
-        owner_earnings_dict["owner_earnings_per_share"] = owner_earnings_per_share
+        owner_earnings_dict["owner_earnings"] = round(owner_earnings, 2)
+        owner_earnings_dict["owner_earnings_per_share"] = round(owner_earnings_per_share, 2)
 
-        print(f"Owner Earnings ==> ${owner_earnings:.2f}")
-        print(f"Owner Earnings (per share) ==> ${owner_earnings_per_share:.2f}")
+        if self.ANALYZE_ONE_COMPANY:
+            print(f"Owner Earnings ==> ${owner_earnings:.2f}")
+            print(f"Owner Earnings (per share) ==> ${owner_earnings_per_share:.2f}")
 
         return owner_earnings_dict
 
@@ -664,8 +869,10 @@ class CalculationsToMake:
         owner_earnings_per_share = owner_earnings.get("owner_earnings_per_share")
 
         cash_interest_rate = (owner_earnings_per_share / stock_price) * 100
+        cash_interest_rate = round(cash_interest_rate, 2)
 
-        print(f"Company cash interest rate (yield) ==> {cash_interest_rate:.2f}%")
+        if self.ANALYZE_ONE_COMPANY:
+            print(f"Company cash interest rate (yield) ==> {cash_interest_rate}%")
 
         return cash_interest_rate
 
@@ -683,8 +890,10 @@ class CalculationsToMake:
         owner_earnings_per_share = owner_earnings.get("owner_earnings_per_share")
 
         desired_price = owner_earnings_per_share / minimum_cash_yield
+        desired_price = round(desired_price, 2)
 
-        print(f"A fair buying price ==> ${desired_price:.2f}")
+        if self.ANALYZE_ONE_COMPANY:
+            print(f"A fair buying price ==> ${desired_price}")
 
         return desired_price
 
@@ -738,19 +947,21 @@ class CalculationsToMake:
         equity_value = enterprise_value - total_debt + cash_and_cash_equivalents
 
         epv_per_share = equity_value / shares_outstanding
+        epv_per_share = round(epv_per_share, 2)
 
-        print(f"Earnings Power Value (EPV) Per Share ==> ${epv_per_share:.2f}")
+        if self.ANALYZE_ONE_COMPANY:
+            print(f"Earnings Power Value (EPV) Per Share ==> ${epv_per_share}")
 
         return epv_per_share
 
 
     def calculate_maximum_and_ideal_prices(
         self, owner_earnings: dict, interest_rate: float, margin_of_safety: float
-    ) -> float:
+    ) -> dict:
 
         """
         This calculation focuses on determining the maximum price you
-        should pay for a company’s shares based on its cash profits
+        should pay for a company's shares based on its cash profits
         (or "owner earnings") relative to prevailing interest
         rates (adjusted for inflation and risk).
         """
@@ -767,12 +978,13 @@ class CalculationsToMake:
 
         cash_yield_at_ideal_price = (owner_earnings_per_share / ideal_price_with_mos) * 100
 
-        print(f"Maximum Price ==> ${maximum_price:.2f}")
-        print(f"Ideal Price ({(margin_of_safety * 100):.2f}% Discount) ==> ${ideal_price_with_mos:.2f}")
-        print(f"Cash Yield at Ideal Price ==> {cash_yield_at_ideal_price:.2f}%")
+        if self.ANALYZE_ONE_COMPANY:
+            print(f"Maximum Price ==> ${maximum_price:.2f}")
+            print(f"Ideal Price ({(margin_of_safety * 100):.2f}% Discount) ==> ${ideal_price_with_mos:.2f}")
+            print(f"Cash Yield at Ideal Price ==> {cash_yield_at_ideal_price:.2f}%")
 
-        ideal_prices_and_cash_yield["maximum_price"] = maximum_price
-        ideal_prices_and_cash_yield["ideal_price"] = ideal_price_with_mos
-        ideal_prices_and_cash_yield["cash_yield_ideal_price"] = cash_yield_at_ideal_price
+        ideal_prices_and_cash_yield["maximum_price"] = round(maximum_price, 2)
+        ideal_prices_and_cash_yield["ideal_price"] = round(ideal_price_with_mos, 2)
+        ideal_prices_and_cash_yield["cash_yield_ideal_price"] = round(cash_yield_at_ideal_price, 2)
 
         return ideal_prices_and_cash_yield
