@@ -109,7 +109,7 @@ if __name__ == "__main__":
                     PATH_TO_SAVE_COMPANY_VALUATIONS,
                 )
 
-                time.sleep(1) # <-- Just in case to stay under FMP API limit
+                time.sleep(0.1) # <-- Just in case to stay under FMP API limit
 
             else:
                 continue
