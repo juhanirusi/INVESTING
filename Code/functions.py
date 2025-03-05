@@ -37,11 +37,15 @@ class CalculationsToMake:
                     print(f"Book Value Per Share (for year - {report_date}) ==> ${bvps:.2f}")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest book value per share
-            max_date = max(book_values_per_share.keys())
-            book_value_per_share = book_values_per_share[max_date]
-            book_value_per_share = round(book_value_per_share, 2)
 
-            return book_value_per_share
+            try:
+                max_date = max(book_values_per_share.keys())
+                book_value_per_share = book_values_per_share[max_date]
+                book_value_per_share = round(book_value_per_share, 2)
+            except ValueError:
+                book_value_per_share = 0.00
+            finally:
+                return book_value_per_share
 
         return book_values_per_share
 
@@ -72,10 +76,14 @@ class CalculationsToMake:
                     print(f"Effective Tax Rate (for year - {report_date}) ==> {company_effective_tax_rate:.2f} %")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest effective tax rate
-            max_date = max(effective_tax_rates.keys())
-            effective_tax_rate = effective_tax_rates[max_date]
 
-            return effective_tax_rates, effective_tax_rate
+            try:
+                max_date = max(effective_tax_rates.keys())
+                effective_tax_rate = effective_tax_rates[max_date]
+            except ValueError:
+                effective_tax_rate = 0.00
+            finally:
+                return effective_tax_rates, effective_tax_rate
 
         return effective_tax_rates, None
 
@@ -112,11 +120,15 @@ class CalculationsToMake:
                     print(f"Return on Capital Employed Ratio (for year - {report_date}) ==> {roce:.2f} %")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest return on capital employed ratio
-            max_date = max(return_on_capital_employed_ratios.keys())
-            return_on_capital_employed_ratio = return_on_capital_employed_ratios[max_date]
-            return_on_capital_employed_ratio = round(roce, 2)
 
-            return return_on_capital_employed_ratios, return_on_capital_employed_ratio
+            try:
+                max_date = max(return_on_capital_employed_ratios.keys())
+                return_on_capital_employed_ratio = return_on_capital_employed_ratios[max_date]
+                return_on_capital_employed_ratio = round(roce, 2)
+            except ValueError:
+                return_on_capital_employed_ratio = 0.00
+            finally:
+                return return_on_capital_employed_ratios, return_on_capital_employed_ratio
 
         return return_on_capital_employed_ratios, None
 
@@ -190,11 +202,15 @@ class CalculationsToMake:
                     print(f"Operating Cash Conversion Ratio (for year - {report_date}) ==> {occr:.2f} %")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest operating cash conversion ratio
-            max_date = max(operating_cash_conversion_ratios.keys())
-            operating_cash_conversion_ratio = operating_cash_conversion_ratios[max_date]
-            operating_cash_conversion_ratio = round(operating_cash_conversion_ratio, 2)
 
-            return operating_cash_conversion_ratio
+            try:
+                max_date = max(operating_cash_conversion_ratios.keys())
+                operating_cash_conversion_ratio = operating_cash_conversion_ratios[max_date]
+                operating_cash_conversion_ratio = round(operating_cash_conversion_ratio, 2)
+            except ValueError:
+                operating_cash_conversion_ratio = 0.00
+            finally:
+                return operating_cash_conversion_ratio
 
         return operating_cash_conversion_ratios
 
@@ -238,11 +254,15 @@ class CalculationsToMake:
                     print(f"Depreciation to Operating Cash Flow Ratio (for year - {report_date}) ==> {dtocfr:.2f} %")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest depreciation to operating cash flow ratio
-            max_date = max(depreciation_to_operating_cash_flow_ratios.keys())
-            depreciation_to_operating_cash_flow_ratio = depreciation_to_operating_cash_flow_ratios[max_date]
-            depreciation_to_operating_cash_flow_ratio = round(depreciation_to_operating_cash_flow_ratio, 2)
 
-            return depreciation_to_operating_cash_flow_ratio
+            try:
+                max_date = max(depreciation_to_operating_cash_flow_ratios.keys())
+                depreciation_to_operating_cash_flow_ratio = depreciation_to_operating_cash_flow_ratios[max_date]
+                depreciation_to_operating_cash_flow_ratio = round(depreciation_to_operating_cash_flow_ratio, 2)
+            except ValueError:
+                depreciation_to_operating_cash_flow_ratio = 0.00
+            finally:
+                return depreciation_to_operating_cash_flow_ratio
 
         return depreciation_to_operating_cash_flow_ratios
 
@@ -282,11 +302,15 @@ class CalculationsToMake:
                     print(f"Inventory and Stock Ratio (for year - {report_date}) ==> {sr:.2f} %")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest inventory and stock Ratio
-            max_date = max(inventory_and_stock_ratios.keys())
-            inventory_and_stock_ratio = inventory_and_stock_ratios[max_date]
-            inventory_and_stock_ratio = round(inventory_and_stock_ratio, 2)
 
-            return inventory_and_stock_ratio
+            try:
+                max_date = max(inventory_and_stock_ratios.keys())
+                inventory_and_stock_ratio = inventory_and_stock_ratios[max_date]
+                inventory_and_stock_ratio = round(inventory_and_stock_ratio, 2)
+            except ValueError:
+                inventory_and_stock_ratio = 0.00
+            finally:
+                return inventory_and_stock_ratio
 
         return inventory_and_stock_ratios
 
@@ -321,11 +345,15 @@ class CalculationsToMake:
                     print(f"Debtor Ratio (for year - {report_date}) ==> {dr:.2f} %")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest debtor ratio
-            max_date = max(debtor_ratios.keys())
-            debtor_ratio = debtor_ratios[max_date]
-            debtor_ratio = round(debtor_ratio, 2)
 
-            return debtor_ratio
+            try:
+                max_date = max(debtor_ratios.keys())
+                debtor_ratio = debtor_ratios[max_date]
+                debtor_ratio = round(debtor_ratio, 2)
+            except ValueError:
+                debtor_ratio = 0.00
+            finally:
+                return debtor_ratio
 
         return debtor_ratios
 
@@ -362,11 +390,15 @@ class CalculationsToMake:
                     print(f"Capex Ratio (for year - {report_date}) ==> {cr:.2f} %")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest CapEx ratio
-            max_date = max(capex_ratios.keys())
-            capex_ratio = capex_ratios[max_date]
-            capex_ratio = round(capex_ratio, 2)
 
-            return capex_ratio
+            try:
+                max_date = max(capex_ratios.keys())
+                capex_ratio = capex_ratios[max_date]
+                capex_ratio = round(capex_ratio, 2)
+            except ValueError:
+                capex_ratio = 0.00
+            finally:
+                return capex_ratio
 
         return capex_ratios
 
@@ -412,11 +444,15 @@ class CalculationsToMake:
                     print(f"Capex to Depreciation Ratio (for year - {report_date}) ==> {ctdr:.2f} %")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest CapEx to Depreciation Ratio
-            max_date = max(capex_to_depreciation_ratios.keys())
-            capex_to_depreciation_ratio = capex_to_depreciation_ratios[max_date]
-            capex_to_depreciation_ratio = round(capex_to_depreciation_ratio, 2)
 
-            return capex_to_depreciation_ratio
+            try:
+                max_date = max(capex_to_depreciation_ratios.keys())
+                capex_to_depreciation_ratio = capex_to_depreciation_ratios[max_date]
+                capex_to_depreciation_ratio = round(capex_to_depreciation_ratio, 2)
+            except ValueError:
+                capex_to_depreciation_ratio = 0.00
+            finally:
+                return capex_to_depreciation_ratio
 
         return capex_to_depreciation_ratios
 
@@ -520,11 +556,15 @@ class CalculationsToMake:
                     print(f"Free Cash Flow Per Share (for year - {report_date}) ==> ${fcfps:.2f}")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest Free Cash Flow Per Share
-            max_date = max(free_cash_flows_per_share.keys())
-            free_cash_flow_per_share = free_cash_flows_per_share[max_date]
-            free_cash_flow_per_share = round(free_cash_flow_per_share, 2)
 
-            return free_cash_flows_per_share, free_cash_flow_per_share
+            try:
+                max_date = max(free_cash_flows_per_share.keys())
+                free_cash_flow_per_share = free_cash_flows_per_share[max_date]
+                free_cash_flow_per_share = round(free_cash_flow_per_share, 2)
+            except ValueError:
+                free_cash_flow_per_share = 0.00
+            finally:
+                return free_cash_flows_per_share, free_cash_flow_per_share
 
         return free_cash_flows_per_share, None
 
@@ -625,15 +665,19 @@ class CalculationsToMake:
                     if self.ANALYZE_ONE_COMPANY:
                         print(f"Free Cash Flow Dividend Cover Ratio (for year - {report_date}) ==> {fcfdc:.2f}")
 
-                except TypeError:
+                except:
                     print("NO DIVIDEND !!!")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest Free Cash Flow Dividend Cover Ratio
-            max_date = max(free_cash_flow_dividend_cover_ratios.keys())
-            free_cash_flow_dividend_cover_ratio = free_cash_flow_dividend_cover_ratios[max_date]
-            free_cash_flow_dividend_cover_ratio = round(free_cash_flow_dividend_cover_ratio, 2)
 
-            return free_cash_flow_dividend_cover_ratio
+            try:
+                max_date = max(free_cash_flow_dividend_cover_ratios.keys())
+                free_cash_flow_dividend_cover_ratio = free_cash_flow_dividend_cover_ratios[max_date]
+                free_cash_flow_dividend_cover_ratio = round(free_cash_flow_dividend_cover_ratio, 2)
+            except ValueError:
+                free_cash_flow_dividend_cover_ratio = 0.00
+            finally:
+                return free_cash_flow_dividend_cover_ratio
 
         return free_cash_flow_dividend_cover_ratios
 
@@ -675,11 +719,15 @@ class CalculationsToMake:
                     print(f"Debt To Free Cash Flow Ratio (for year - {report_date}) ==> {dtfcfr:.2f}")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest Debt To Free Cash Flow Ratio
-            max_date = max(debt_to_free_cash_flow_ratios.keys())
-            debt_to_free_cash_flow_ratio = debt_to_free_cash_flow_ratios[max_date]
-            debt_to_free_cash_flow_ratio = round(debt_to_free_cash_flow_ratio, 2)
 
-            return debt_to_free_cash_flow_ratio
+            try:
+                max_date = max(debt_to_free_cash_flow_ratios.keys())
+                debt_to_free_cash_flow_ratio = debt_to_free_cash_flow_ratios[max_date]
+                debt_to_free_cash_flow_ratio = round(debt_to_free_cash_flow_ratio, 2)
+            except ValueError:
+                debt_to_free_cash_flow_ratio = 0.00
+            finally:
+                return debt_to_free_cash_flow_ratio
 
         return debt_to_free_cash_flow_ratios
 
@@ -721,11 +769,15 @@ class CalculationsToMake:
                     print(f"Debt To Net Operating Cash Flow Ratio (for year - {report_date}) ==> {dtnocfr:.2f}")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest Debt To Net Operating Cash Flow Ratio
-            max_date = max(debt_to_net_operating_cash_flow_ratios.keys())
-            debt_to_net_operating_cash_flow_ratio = debt_to_net_operating_cash_flow_ratios[max_date]
-            debt_to_net_operating_cash_flow_ratio = round(debt_to_net_operating_cash_flow_ratio, 2)
 
-            return debt_to_net_operating_cash_flow_ratio
+            try:
+                max_date = max(debt_to_net_operating_cash_flow_ratios.keys())
+                debt_to_net_operating_cash_flow_ratio = debt_to_net_operating_cash_flow_ratios[max_date]
+                debt_to_net_operating_cash_flow_ratio = round(debt_to_net_operating_cash_flow_ratio, 2)
+            except ValueError:
+                debt_to_net_operating_cash_flow_ratio = 0.00
+            finally:
+                return debt_to_net_operating_cash_flow_ratio
 
         return debt_to_net_operating_cash_flow_ratios
 
@@ -765,11 +817,15 @@ class CalculationsToMake:
                     print(f"Debt to Assets Ratio (for year - {report_date}) ==> {dtar:.2f} %")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest Debt to Assets Ratio
-            max_date = max(debt_to_assets_ratios.keys())
-            debt_to_assets_ratio = debt_to_assets_ratios[max_date]
-            debt_to_assets_ratio = round(debt_to_assets_ratio, 2)
 
-            return debt_to_assets_ratio
+            try:
+                max_date = max(debt_to_assets_ratios.keys())
+                debt_to_assets_ratio = debt_to_assets_ratios[max_date]
+                debt_to_assets_ratio = round(debt_to_assets_ratio, 2)
+            except ValueError:
+                debt_to_assets_ratio = 0.00
+            finally:
+                return debt_to_assets_ratio
 
         return debt_to_assets_ratios
 
@@ -803,11 +859,15 @@ class CalculationsToMake:
                     print(f"Interest Cover Ratio (for year - {report_date}) ==> {icr:.2f}")
 
         if not self.ANALYZE_ONE_COMPANY: # Return the latest Interest Cover Ratio
-            max_date = max(interest_cover_ratios.keys())
-            interest_cover_ratio = interest_cover_ratios[max_date]
-            interest_cover_ratio = round(interest_cover_ratio, 2)
 
-            return interest_cover_ratio
+            try:
+                max_date = max(interest_cover_ratios.keys())
+                interest_cover_ratio = interest_cover_ratios[max_date]
+                interest_cover_ratio = round(interest_cover_ratio, 2)
+            except ValueError:
+                interest_cover_ratio = 0.00
+            finally:
+                return interest_cover_ratio
 
         return interest_cover_ratios
 
@@ -836,24 +896,31 @@ class CalculationsToMake:
             divider += 1
 
         # Calculate the historical average CapEx...
-        maintenance_capex = sum_of_capex / divider
 
-        net_income = income_statements["netIncome"].iloc[0]
-        depreciation_and_amortization = income_statements["depreciationAndAmortization"].iloc[0]
-        other_non_cash_items = cash_flows["otherNonCashItems"].iloc[0]
-        shares_outstanding = income_statements["weightedAverageShsOut"].iloc[0]
+        try:
+            maintenance_capex = sum_of_capex / divider
 
-        owner_earnings = net_income + depreciation_and_amortization + other_non_cash_items - maintenance_capex
-        owner_earnings_per_share = owner_earnings / shares_outstanding
+            net_income = income_statements["netIncome"].iloc[0]
+            depreciation_and_amortization = income_statements["depreciationAndAmortization"].iloc[0]
+            other_non_cash_items = cash_flows["otherNonCashItems"].iloc[0]
+            shares_outstanding = income_statements["weightedAverageShsOut"].iloc[0]
 
-        owner_earnings_dict["owner_earnings"] = round(owner_earnings, 2)
-        owner_earnings_dict["owner_earnings_per_share"] = round(owner_earnings_per_share, 2)
+            owner_earnings = net_income + depreciation_and_amortization + other_non_cash_items - maintenance_capex
+            owner_earnings_per_share = owner_earnings / shares_outstanding
 
-        if self.ANALYZE_ONE_COMPANY:
-            print(f"Owner Earnings ==> ${owner_earnings:.2f}")
-            print(f"Owner Earnings (per share) ==> ${owner_earnings_per_share:.2f}")
+            owner_earnings_dict["owner_earnings"] = round(owner_earnings, 2)
+            owner_earnings_dict["owner_earnings_per_share"] = round(owner_earnings_per_share, 2)
 
-        return owner_earnings_dict
+        except ZeroDivisionError:
+            owner_earnings_dict["owner_earnings"] = 0.00
+            owner_earnings_dict["owner_earnings_per_share"] = 0.00
+
+        finally:
+            if self.ANALYZE_ONE_COMPANY:
+                print(f"Owner Earnings ==> ${owner_earnings:.2f}")
+                print(f"Owner Earnings (per share) ==> ${owner_earnings_per_share:.2f}")
+
+            return owner_earnings_dict
 
 
     def calculate_cash_interest_rate(self, owner_earnings: dict, stock_price: float) -> float:
@@ -923,36 +990,40 @@ class CalculationsToMake:
         balance_sheets = fmp_balance_sheets.sort_values(by="date", ascending=False)
         cash_flow_statements = fmp_cash_flow_statements.sort_values(by="date", ascending=False)
 
-        report_date = income_statements["date"].iloc[0]
+        try:
+            report_date = income_statements["date"].iloc[0]
 
-        ebit = income_statements["operatingIncome"].iloc[0] # EBIT
-        shares_outstanding = income_statements["weightedAverageShsOut"].iloc[0]
+            ebit = income_statements["operatingIncome"].iloc[0] # EBIT
+            shares_outstanding = income_statements["weightedAverageShsOut"].iloc[0]
 
-        total_debt = balance_sheets["totalDebt"].iloc[0]
-        cash_and_cash_equivalents = balance_sheets["cashAndCashEquivalents"].iloc[0]
+            total_debt = balance_sheets["totalDebt"].iloc[0]
+            cash_and_cash_equivalents = balance_sheets["cashAndCashEquivalents"].iloc[0]
 
-        depreciation_and_amortization = cash_flow_statements["depreciationAndAmortization"].iloc[0]
-        capital_expenditure = abs(cash_flow_statements["capitalExpenditure"]).iloc[0]
+            depreciation_and_amortization = cash_flow_statements["depreciationAndAmortization"].iloc[0]
+            capital_expenditure = abs(cash_flow_statements["capitalExpenditure"]).iloc[0]
 
-        tax_rate = company_tax_rates.get(report_date)
+            tax_rate = company_tax_rates.get(report_date)
 
-        #------------------------------------------------------------
+            #------------------------------------------------------------
 
-        normalized_cash_profit = ebit + depreciation_and_amortization - capital_expenditure
+            normalized_cash_profit = ebit + depreciation_and_amortization - capital_expenditure
 
-        after_tax_cash_profit = normalized_cash_profit * (1 - tax_rate)
+            after_tax_cash_profit = normalized_cash_profit * (1 - tax_rate)
 
-        enterprise_value = after_tax_cash_profit / minimum_cash_yield
+            enterprise_value = after_tax_cash_profit / minimum_cash_yield
 
-        equity_value = enterprise_value - total_debt + cash_and_cash_equivalents
+            equity_value = enterprise_value - total_debt + cash_and_cash_equivalents
 
-        epv_per_share = equity_value / shares_outstanding
-        epv_per_share = round(epv_per_share, 2)
+            epv_per_share = equity_value / shares_outstanding
+            epv_per_share = round(epv_per_share, 2)
 
-        if self.ANALYZE_ONE_COMPANY:
-            print(f"Earnings Power Value (EPV) Per Share ==> ${epv_per_share}")
+        except:
+            epv_per_share = 0.00
+        finally:
+            if self.ANALYZE_ONE_COMPANY:
+                print(f"Earnings Power Value (EPV) Per Share ==> ${epv_per_share}")
 
-        return epv_per_share
+            return epv_per_share
 
 
     def calculate_maximum_and_ideal_prices(
@@ -968,23 +1039,30 @@ class CalculationsToMake:
 
         ideal_prices_and_cash_yield = {}
 
-        # Cash Profit Per Share
-        owner_earnings_per_share = owner_earnings.get("owner_earnings_per_share")
+        try:
+            # Cash Profit Per Share
+            owner_earnings_per_share = owner_earnings.get("owner_earnings_per_share")
 
-        maximum_price = owner_earnings_per_share / interest_rate
+            maximum_price = owner_earnings_per_share / interest_rate
 
-        # Price with Margin of Safety
-        ideal_price_with_mos = maximum_price * (1 - margin_of_safety)
+            # Price with Margin of Safety
+            ideal_price_with_mos = maximum_price * (1 - margin_of_safety)
 
-        cash_yield_at_ideal_price = (owner_earnings_per_share / ideal_price_with_mos) * 100
+            cash_yield_at_ideal_price = (owner_earnings_per_share / ideal_price_with_mos) * 100
 
-        if self.ANALYZE_ONE_COMPANY:
-            print(f"Maximum Price ==> ${maximum_price:.2f}")
-            print(f"Ideal Price ({(margin_of_safety * 100):.2f}% Discount) ==> ${ideal_price_with_mos:.2f}")
-            print(f"Cash Yield at Ideal Price ==> {cash_yield_at_ideal_price:.2f}%")
+            ideal_prices_and_cash_yield["maximum_price"] = round(maximum_price, 2)
+            ideal_prices_and_cash_yield["ideal_price"] = round(ideal_price_with_mos, 2)
+            ideal_prices_and_cash_yield["cash_yield_ideal_price"] = round(cash_yield_at_ideal_price, 2)
 
-        ideal_prices_and_cash_yield["maximum_price"] = round(maximum_price, 2)
-        ideal_prices_and_cash_yield["ideal_price"] = round(ideal_price_with_mos, 2)
-        ideal_prices_and_cash_yield["cash_yield_ideal_price"] = round(cash_yield_at_ideal_price, 2)
+        except:
+            ideal_prices_and_cash_yield["maximum_price"] = 0.00
+            ideal_prices_and_cash_yield["ideal_price"] = 0.00
+            ideal_prices_and_cash_yield["cash_yield_ideal_price"] = 0.00
 
-        return ideal_prices_and_cash_yield
+        finally:
+            if self.ANALYZE_ONE_COMPANY:
+                print(f"Maximum Price ==> ${maximum_price:.2f}")
+                print(f"Ideal Price ({(margin_of_safety * 100):.2f}% Discount) ==> ${ideal_price_with_mos:.2f}")
+                print(f"Cash Yield at Ideal Price ==> {cash_yield_at_ideal_price:.2f}%")
+
+            return ideal_prices_and_cash_yield
