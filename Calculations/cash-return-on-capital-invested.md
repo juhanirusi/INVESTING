@@ -26,7 +26,7 @@
 ## What Does CROCI Tell Us?
 
 
-- `Efficiency in Cash Generation` --> CROCI focuses on the company’s ability to turn invested capital into cash, showing the efficiency of asset utilization.
+- `Efficiency in Cash Generation` --> CROCI focuses on the company's ability to turn invested capital into cash, showing the efficiency of asset utilization.
 
 - `Investment Quality` --> *A company with a consistently high CROCI is often considered a good investment because it generates high returns relative to the capital employed.*
 
