@@ -101,4 +101,6 @@ class FetchFinancialData:
 
         stock_tickers = stock_tickers[["symbol", "name", "price", "exchangeShortName"]]
 
+        stock_tickers = stock_tickers.loc[stock_tickers["symbol"] != "NA"]
+
         return stock_tickers
