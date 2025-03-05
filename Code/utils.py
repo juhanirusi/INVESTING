@@ -101,7 +101,7 @@ class WorkWithDataFrame:
         values_dict["current_share_price"] = current_share_price
 
         # First, check if DataFrame is empty
-        if stock_ticker not in company_valuations["stock_ticker"].values:
+        if stock_ticker not in company_valuations["stock_ticker"].dropna().values:
             company_valuations = pd.concat([company_valuations, pd.DataFrame([values_dict])], ignore_index=True)
         else:
             # Locate the row that matches the conditions
