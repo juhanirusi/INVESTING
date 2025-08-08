@@ -62,6 +62,22 @@ class FetchFinancialData:
             return cash_flow_statements
 
 
+    def fetch_historical_stock_price_data_from_fmp(self, stock_ticker) -> pd.DataFrame:
+
+        try:
+            URL = f"{self.FMP_BASE_URL}/historical-price-full/{stock_ticker}?apikey={self.FMP_API_KEY}"
+
+            historical_stock_price_data = requests.get(URL).json()
+
+            historical_stock_price_data = pd.json_normalize(historical_stock_price_data, record_path=["historical"])
+
+            historical_stock_price_data = historical_stock_price_data.sort_values(by="date")
+        except KeyError:
+            historical_stock_price_data = pd.DataFrame()
+        finally:
+            return historical_stock_price_data
+
+
     def fetch_dividend_history_data_from_fmp(self, stock_ticker) -> dict:
 
         try:

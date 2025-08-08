@@ -6,6 +6,54 @@ class CalculationsToMake:
     def __init__(self, analyze_one_company):
         self.ANALYZE_ONE_COMPANY = analyze_one_company
 
+
+    def historical_returns(
+        self, historical_stock_price_data: pd.DataFrame
+    ) -> dict:
+
+        """
+        With this function, we calculate the cash and percentage
+        return on investment of a specific stock and it's compound
+        annual growth rate (CAGR) over the period of time
+        that the stock price data has.
+        """
+
+        historical_stock_returns_dict = {}
+
+        try:
+            historical_stock_price_data["date"] = pd.to_datetime(historical_stock_price_data["date"])
+
+            historical_stock_price_data = historical_stock_price_data.sort_values("date")
+
+            initial_price = historical_stock_price_data["close"].iloc[0]
+            final_price = historical_stock_price_data["close"].iloc[-1]
+            start_date = historical_stock_price_data["date"].iloc[0]
+            end_date = historical_stock_price_data["date"].iloc[-1]
+
+            years = (end_date - start_date).days / 365.25
+
+            total_return = final_price - initial_price
+            percent_return = (total_return / initial_price) * 100
+            cagr = ((final_price / initial_price) ** (1 / years) - 1) * 100
+
+            historical_stock_returns_dict["total_return"] = round(total_return, 2)
+            historical_stock_returns_dict["total_return_as_percentage"] = round(percent_return, 2)
+            historical_stock_returns_dict["compound_annual_growth_rate"] = round(cagr, 2)
+
+        except KeyError:
+            historical_stock_returns_dict["total_return"] = None
+            historical_stock_returns_dict["total_return_as_percentage"] = None
+            historical_stock_returns_dict["compound_annual_growth_rate"] = None
+
+        finally:
+            if self.ANALYZE_ONE_COMPANY:
+                print(f"Return ($): {total_return:.2f}")
+                print(f"Return (%): {percent_return:.2f}%")
+                print(f"Compound Annual Growth Rate (CAGR): {cagr:.2f}%")
+
+            return historical_stock_returns_dict
+
+
     def book_value_per_share(
         self,
         fmp_income_statements: pd.DataFrame,

@@ -7,7 +7,7 @@ from utils import CleanData, WorkWithDataFrame
 
 ###########################################################
 
-ANALYZE_ONE_COMPANY = False
+ANALYZE_ONE_COMPANY = True
 
 STOCK_TICKER = "ALSN"
 CURRENT_SHARE_PRICE = 101.00
@@ -16,8 +16,8 @@ MINIMUM_CASH_YIELD = 0.08 # USE AT LEAST 5%
 INTEREST_RATE = 0.0457 # 4.57% (Average U.S. 10 Year Treasury Yield)
 MARGIN_OF_SAFETY = 0.15 # 15%
 
-PATH_TO_SAVE_STOCK_TICKERS = r"C:\Users\juhan\OneDrive\Omat Tiedostot\GitHub\INVESTING\Code\Data\stock_tickers.csv"
-PATH_TO_SAVE_COMPANY_VALUATIONS = r"C:\Users\juhan\OneDrive\Omat Tiedostot\GitHub\INVESTING\Code\Data\company_valuations.csv"
+PATH_TO_SAVE_STOCK_TICKERS = r"C:\Users\juhan\GitHub\INVESTING\Code\Data\stock_tickers.csv"
+PATH_TO_SAVE_COMPANY_VALUATIONS = r"C:\Users\juhan\GitHub\INVESTING\Code\Data\company_valuations.csv"
 
 """
 MINIMUM_CASH_YIELD --> Risk Mitigation: A higher starting
@@ -71,6 +71,8 @@ if __name__ == "__main__":
 
                 dividends = fetch_financial_data.fetch_dividend_history_data_from_fmp(stock_ticker=stock["symbol"])
 
+                historical_stock_price_data = fetch_financial_data.fetch_historical_stock_price_data_from_fmp(stock_ticker=STOCK_TICKER)
+
                 # Skip this company if they don't have financial statements
                 if fmp_income_statements.empty or fmp_balance_sheets.empty or fmp_cash_flows.empty:
                     continue
@@ -86,6 +88,7 @@ if __name__ == "__main__":
                     income_statements=fmp_income_statements,
                     balance_sheets=fmp_balance_sheets,
                     cash_flow_statements=fmp_cash_flows,
+                    historical_stock_price_data=historical_stock_price_data,
                     dividend_history=dividends,
                     analyze_one_company=ANALYZE_ONE_COMPANY,
                     stock_price=stock["price"],
@@ -122,6 +125,8 @@ if __name__ == "__main__":
 
         dividends = fetch_financial_data.fetch_dividend_history_data_from_fmp(stock_ticker=STOCK_TICKER)
 
+        historical_stock_price_data = fetch_financial_data.fetch_historical_stock_price_data_from_fmp(stock_ticker=STOCK_TICKER)
+
         fmp_income_statements, fmp_balance_sheets, fmp_cash_flows, dividends = clean_data.keep_common_financial_reports(
             income_statements=fmp_income_statements,
             balance_sheets=fmp_balance_sheets,
@@ -133,6 +138,7 @@ if __name__ == "__main__":
             income_statements=fmp_income_statements,
             balance_sheets=fmp_balance_sheets,
             cash_flow_statements=fmp_cash_flows,
+            historical_stock_price_data=historical_stock_price_data,
             dividend_history=dividends,
             analyze_one_company=ANALYZE_ONE_COMPANY,
             stock_price=CURRENT_SHARE_PRICE,

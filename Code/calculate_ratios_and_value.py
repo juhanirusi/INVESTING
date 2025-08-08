@@ -8,6 +8,7 @@ class CalculateRatiosAndCompanyValue:
         income_statements,
         balance_sheets,
         cash_flow_statements,
+        historical_stock_price_data,
         dividend_history,
         analyze_one_company,
         stock_price,
@@ -18,6 +19,7 @@ class CalculateRatiosAndCompanyValue:
         self.INCOME_STATEMENTS = income_statements
         self.BALANCE_SHEETS = balance_sheets
         self.CASH_FLOW_STATEMENTS = cash_flow_statements
+        self.HISTORICAL_STOCK_PRICE_DATA = historical_stock_price_data
         self.DIVIDEND_HISTORY = dividend_history
         self.ANALYZE_ONE_COMPANY = analyze_one_company
         self.STOCK_PRICE = stock_price
@@ -27,6 +29,9 @@ class CalculateRatiosAndCompanyValue:
 
     def calculate_ratios(self, functions: CalculationsToMake):
 
+        historical_returns = functions.historical_returns(
+            historical_stock_price_data=self.HISTORICAL_STOCK_PRICE_DATA
+        )
         book_value_per_share = functions.book_value_per_share(
             self.INCOME_STATEMENTS, self.BALANCE_SHEETS
         )
@@ -145,6 +150,9 @@ class CalculateRatiosAndCompanyValue:
                 "max_price_to_pay": maximum_and_ideal_prices["maximum_price"],
                 "ideal_price_with_mos": maximum_and_ideal_prices["ideal_price"],
                 "cash_yield_at_ideal_price": maximum_and_ideal_prices["cash_yield_ideal_price"],
+                "total_return": historical_returns["total_return"],
+                "total_return_as_percentage": historical_returns["total_return_as_percentage"],
+                "compound_annual_growth_rate": historical_returns["compound_annual_growth_rate"],
                 "book_value_per_share": book_value_per_share,
                 "effective_tax_rate": company_effective_tax_rate,
                 "return_on_capital_employed_ratio": roce,

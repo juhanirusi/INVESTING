@@ -20,6 +20,9 @@ class WorkWithDataFrame:
             "max_price_to_pay": "float64",
             "ideal_price_with_mos": "float64",
             "cash_yield_at_ideal_price": "float64",
+            "total_return": "float64",
+            "total_return_as_percentage": "float64",
+            "compound_annual_growth_rate": "float64",
             "book_value_per_share": "float64",
             "effective_tax_rate": "float64",
             "return_on_capital_employed_ratio": "float64",
@@ -124,7 +127,7 @@ class WorkWithDataFrame:
         dataframe.to_csv(
             path_to_save_file,
             sep=";",
-            decimal=',',
+            decimal=",",
             encoding="utf-8",
             index=False,
             header=True
@@ -157,9 +160,9 @@ class CleanData:
             final_years.append(int(date[:4]))
 
         # Filter DataFrames (and dividends dict)
-        income_statements = income_statements[income_statements['date'].isin(final_dates)]
-        balance_sheets = balance_sheets[balance_sheets['date'].isin(final_dates)]
-        cash_flow_statements = cash_flow_statements[cash_flow_statements['date'].isin(final_dates)]
+        income_statements = income_statements[income_statements["date"].isin(final_dates)]
+        balance_sheets = balance_sheets[balance_sheets["date"].isin(final_dates)]
+        cash_flow_statements = cash_flow_statements[cash_flow_statements["date"].isin(final_dates)]
         dividends = { key: value for key, value in dividends.items() if key in final_years }
 
         return income_statements, balance_sheets, cash_flow_statements, dividends
