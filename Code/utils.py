@@ -23,6 +23,7 @@ class WorkWithDataFrame:
             "total_return": "float64",
             "total_return_as_percentage": "float64",
             "compound_annual_growth_rate": "float64",
+            "last_number_years_of_data": "int64",
             "book_value_per_share": "float64",
             "effective_tax_rate": "float64",
             "return_on_capital_employed_ratio": "float64",

@@ -36,20 +36,24 @@ class CalculationsToMake:
             percent_return = (total_return / initial_price) * 100
             cagr = ((final_price / initial_price) ** (1 / years) - 1) * 100
 
+            number_of_years = end_date.year - start_date.year
+
             historical_stock_returns_dict["total_return"] = round(total_return, 2)
             historical_stock_returns_dict["total_return_as_percentage"] = round(percent_return, 2)
             historical_stock_returns_dict["compound_annual_growth_rate"] = round(cagr, 2)
+            historical_stock_returns_dict["last_number_years_of_data"] = number_of_years
 
         except KeyError:
             historical_stock_returns_dict["total_return"] = None
             historical_stock_returns_dict["total_return_as_percentage"] = None
             historical_stock_returns_dict["compound_annual_growth_rate"] = None
+            historical_stock_returns_dict["last_number_years_of_data"] = 0
 
         finally:
             if self.ANALYZE_ONE_COMPANY:
                 print(f"Return ($): {total_return:.2f}")
                 print(f"Return (%): {percent_return:.2f}%")
-                print(f"Compound Annual Growth Rate (CAGR): {cagr:.2f}%")
+                print(f"Compound Annual Growth Rate (CAGR): {cagr:.2f}% Over the Last {number_of_years} Years")
 
             return historical_stock_returns_dict
 

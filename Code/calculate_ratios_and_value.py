@@ -153,6 +153,7 @@ class CalculateRatiosAndCompanyValue:
                 "total_return": historical_returns["total_return"],
                 "total_return_as_percentage": historical_returns["total_return_as_percentage"],
                 "compound_annual_growth_rate": historical_returns["compound_annual_growth_rate"],
+                "last_number_years_of_data": historical_returns["last_number_years_of_data"],
                 "book_value_per_share": book_value_per_share,
                 "effective_tax_rate": company_effective_tax_rate,
                 "return_on_capital_employed_ratio": roce,
