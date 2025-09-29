@@ -16,8 +16,8 @@ MINIMUM_CASH_YIELD = 0.08 # USE AT LEAST 5%
 INTEREST_RATE = 0.0457 # 4.57% (Average U.S. 10 Year Treasury Yield)
 MARGIN_OF_SAFETY = 0.15 # 15%
 
-PATH_TO_SAVE_STOCK_TICKERS = r"C:\Users\juhan\GitHub\INVESTING\Code\Data\stock_tickers.csv"
-PATH_TO_SAVE_COMPANY_VALUATIONS = r"C:\Users\juhan\GitHub\INVESTING\Code\Data\company_valuations.csv"
+PATH_TO_SAVE_STOCK_TICKERS = r""
+PATH_TO_SAVE_COMPANY_VALUATIONS = r""
 
 """
 MINIMUM_CASH_YIELD --> Risk Mitigation: A higher starting
