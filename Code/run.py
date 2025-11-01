@@ -1,4 +1,6 @@
+import os
 import time
+from pathlib import Path
 
 from calculate_ratios_and_value import CalculateRatiosAndCompanyValue
 from fetch_data import FetchFinancialData
@@ -7,7 +9,7 @@ from utils import CleanData, WorkWithDataFrame
 
 ###########################################################
 
-ANALYZE_ONE_COMPANY = True
+ANALYZE_ONE_COMPANY = False
 
 STOCK_TICKER = "ALSN"
 CURRENT_SHARE_PRICE = 101.00
@@ -16,8 +18,8 @@ MINIMUM_CASH_YIELD = 0.08 # USE AT LEAST 5%
 INTEREST_RATE = 0.0457 # 4.57% (Average U.S. 10 Year Treasury Yield)
 MARGIN_OF_SAFETY = 0.15 # 15%
 
-PATH_TO_SAVE_STOCK_TICKERS = r""
-PATH_TO_SAVE_COMPANY_VALUATIONS = r""
+PATH_TO_SAVE_STOCK_TICKERS = Path(os.getenv("PATH_TO_SAVE_STOCK_TICKERS"))
+PATH_TO_SAVE_COMPANY_VALUATIONS = Path(os.getenv("PATH_TO_SAVE_COMPANY_VALUATIONS"))
 
 """
 MINIMUM_CASH_YIELD --> Risk Mitigation: A higher starting
