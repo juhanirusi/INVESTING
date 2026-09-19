@@ -9,10 +9,10 @@ from utils import CleanData, WorkWithDataFrame
 
 ###########################################################
 
-ANALYZE_ONE_COMPANY = False
+ANALYZE_ONE_COMPANY = True
 
-STOCK_TICKER = "ALSN"
-CURRENT_SHARE_PRICE = 101.00
+STOCK_TICKER = "UBER" # <-- Only used if 'ANALYZE_ONE_COMPANY' is True
+CURRENT_SHARE_PRICE = 71.00
 
 MINIMUM_CASH_YIELD = 0.08 # USE AT LEAST 5%
 INTEREST_RATE = 0.0457 # 4.57% (Average U.S. 10 Year Treasury Yield)
@@ -50,11 +50,11 @@ calculate_ratios_and_value = CalculateRatiosAndCompanyValue()
 
 if __name__ == "__main__":
 
-    stock_tickers = fetch_financial_data.fetch_stock_tickers_into_csv_file()
-    work_with_dataframe.save_dataframe_as_csv_file(
-        stock_tickers,
-        PATH_TO_SAVE_STOCK_TICKERS
-    )
+    # stock_tickers = fetch_financial_data.fetch_stock_tickers_into_csv_file()
+    # work_with_dataframe.save_dataframe_as_csv_file(
+    #     stock_tickers,
+    #     PATH_TO_SAVE_STOCK_TICKERS
+    # )
 
     if not ANALYZE_ONE_COMPANY:
 

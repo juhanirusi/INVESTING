@@ -9,7 +9,7 @@ load_dotenv()
 class FetchFinancialData:
 
     def __init__(self):
-        self.FMP_BASE_URL = "https://financialmodelingprep.com/api/v3"
+        self.FMP_BASE_URL = "https://financialmodelingprep.com/stable"
         self.FMP_API_KEY = os.getenv("FMP_API_KEY")
         self.DATA_PERIOD = "annual"
         self.STOCK_EXCHANGES = ["NASDAQ", "NYSE", "HEL", "STO", "OSL", "CPH", "XETRA", "TSX"]
@@ -17,7 +17,7 @@ class FetchFinancialData:
     def fetch_income_statements_from_fmp(self, stock_ticker) -> pd.DataFrame:
 
         try:
-            URL = f"{self.FMP_BASE_URL}/income-statement/{stock_ticker}"
+            URL = f"{self.FMP_BASE_URL}/income-statement?symbol={stock_ticker}"
 
             income_statements = requests.get(URL, params={"period": self.DATA_PERIOD, "apikey": self.FMP_API_KEY}).json()
 
@@ -33,7 +33,7 @@ class FetchFinancialData:
     def fetch_balance_sheets_from_fmp(self, stock_ticker) -> pd.DataFrame:
 
         try:
-            URL = f"{self.FMP_BASE_URL}/balance-sheet-statement/{stock_ticker}"
+            URL = f"{self.FMP_BASE_URL}/balance-sheet-statement?symbol={stock_ticker}"
 
             balance_sheets = requests.get(URL, params={"period": self.DATA_PERIOD, "apikey": self.FMP_API_KEY}).json()
 
@@ -48,14 +48,15 @@ class FetchFinancialData:
 
     def fetch_cash_flow_statements_from_fmp(self, stock_ticker) -> pd.DataFrame:
 
-        URL = f"{self.FMP_BASE_URL}/cash-flow-statement/{stock_ticker}?period={self.DATA_PERIOD}&apikey={self.FMP_API_KEY}"
+        URL = f"{self.FMP_BASE_URL}/cash-flow-statement?symbol={stock_ticker}"
 
         try:
-            cash_flow_statements = requests.get(URL).json()
+            cash_flow_statements = requests.get(URL, params={"period": self.DATA_PERIOD, "apikey": self.FMP_API_KEY}).json()
 
             cash_flow_statements = pd.DataFrame(data=cash_flow_statements)
 
             cash_flow_statements = cash_flow_statements.sort_values(by="date")
+
         except:
             cash_flow_statements = pd.DataFrame()
         finally:
@@ -64,12 +65,12 @@ class FetchFinancialData:
 
     def fetch_historical_stock_price_data_from_fmp(self, stock_ticker) -> pd.DataFrame:
 
+        URL = f"{self.FMP_BASE_URL}/historical-price-eod/full?symbol={stock_ticker}"
+
         try:
-            URL = f"{self.FMP_BASE_URL}/historical-price-full/{stock_ticker}?apikey={self.FMP_API_KEY}"
+            historical_stock_price_data = requests.get(URL, params={"period": self.DATA_PERIOD, "apikey": self.FMP_API_KEY}).json()
 
-            historical_stock_price_data = requests.get(URL).json()
-
-            historical_stock_price_data = pd.json_normalize(historical_stock_price_data, record_path=["historical"])
+            historical_stock_price_data = pd.json_normalize(historical_stock_price_data)
 
             historical_stock_price_data = historical_stock_price_data.sort_values(by="date")
         except KeyError:
@@ -80,12 +81,12 @@ class FetchFinancialData:
 
     def fetch_dividend_history_data_from_fmp(self, stock_ticker) -> dict:
 
+        URL = f"{self.FMP_BASE_URL}/dividends?symbol={stock_ticker}"
+
         try:
-            URL = f"{self.FMP_BASE_URL}/historical-price-full/stock_dividend/{stock_ticker}?apikey={self.FMP_API_KEY}"
+            dividend_history_data = requests.get(URL, params={"period": self.DATA_PERIOD, "apikey": self.FMP_API_KEY}).json()
 
-            dividend_history_data = requests.get(URL).json()
-
-            dividend_history_data = pd.json_normalize(dividend_history_data, record_path=["historical"])
+            dividend_history_data = pd.json_normalize(dividend_history_data)
         except:
             dividend_history_data = pd.DataFrame()
         finally:
